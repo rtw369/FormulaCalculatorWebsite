@@ -5,13 +5,21 @@ let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
 let rightSide = "";
+let variables = new Array();
+let values = new Array();
 
-divideFormula(removeSpaces(formula3));
-console.log(leftSide);
-console.log(rightSide);
+initialize(formula3);
 
-rightSide = turnIntoArray(rightSide);
-console.log(rightSide);
+function initialize(formula) {
+    divideFormula(removeSpaces(formula));
+    leftSide = turnIntoArray(leftSide);
+    rightSide = turnIntoArray(rightSide);
+
+    setVariables(leftSide);
+    setVariables(rightSide);
+
+    console.log(variables);
+}
 
 //when the program recieves the formula, take out the empty characters within a formula
 function removeSpaces(formula) {
@@ -81,4 +89,35 @@ function turnIntoArray(expression) {
     }
 
     return finalArray;
+}
+
+function setVariables(array) {
+    let isVariable = false;
+    let exceptions = "1234567890+-=/*^()E";
+
+    for(let i = 0; i < array.length; i++) {
+        isVariable = true;
+
+        for(let n = 0; n < exceptions.length; n++) {
+            if(array[i].charAt(0) == exceptions.charAt(n)) {
+                isVariable = false;
+            }
+        }
+        for(let n = 0; n < variables.length; n++) {
+            if(array[i] == variables[n]) {
+                isVariable = false;
+            }
+        }
+
+        if(array[i].length == 2 && array[i] == "Pi") isVariable = false;
+        else if(array[i].length == 3) {
+            if(array[i] == "sin") isVariable = false;
+            else if(array[i] == "cos") isVariable = false;
+            else if(array[i] == "tan") isVariable = false;
+        }
+
+        if(isVariable) {
+            variables.push(array[i]);
+        }
+    }
 }
