@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = 1 + 2";
+let formula1 = "a = 1/(3+2+1)^2*3";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -8,7 +8,7 @@ let rightSide = "";
 let variables = new Array();
 let values = new Array();
 
-initialize(formula3);
+initialize(formula1);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
@@ -18,7 +18,38 @@ function initialize(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
-    console.log(variables);
+    /*
+    let termEndIndex = findTerm(0, rightSide);
+
+    let term = new Array(termEndIndex + 1);
+
+    for(let i = 0; i < termEndIndex; i++) {
+        term[i] = rightSide[i];
+    }
+
+    for(let i = 0; i < term.length; i++) {
+        console.log(term[i]);
+    }
+    */
+
+    let denominator = getDenominator(rightSide);
+
+    for(let i = 0; i < denominator.length; i++) {
+        console.log(denominator[i]);
+    }
+
+    
+
+    // get user input and set values
+    // find which variable to solve for - a variable that has undefined as its value
+    // rearrange
+    //      - findTerm
+    //      - moveTerm
+    //      - getDenominator
+    //      - removeDenominator
+    //      - expand
+    // calculate
+    // return final value
 }
 
 //when the program recieves the formula, take out the empty characters within a formula
@@ -120,4 +151,45 @@ function setVariables(array) {
             variables.push(array[i]);
         }
     }
+}
+
+function findTerm(start, array) {
+    let brackets = 0;
+
+    for(let i = start; i < array.length; i++) {
+        if(array[i] == "(") brackets++;
+        else if (array[i] == ")") brackets--;
+        
+        if((array[i] == "-" || array[i] == "+") && brackets == 0) return i;
+    }
+
+    return array.length;
+}
+
+function getDenominator(array) {
+    let start = array.indexOf("/") + 1;
+    let brackets = 0;
+    let end = -1;
+
+    for(let i = start; i <= array.length && i > -1; i++) {
+        
+        if(i == array.length) {
+            end = i;
+            brackets = -1;
+        }
+        else if(array[i] == "(") brackets++;
+        else if (array[i] == ")") brackets--;
+
+        if(brackets == 0 && (array[i] == "+" || array[i] == "-" || array[i] == "*" || array[i] == "/")) end = i;
+    }
+
+    let denominator = new Array(end - start);
+    let indexOfDenominator = 0;
+
+    for(let i = start; i < denominator.length; i++) {
+        denominator[indexOfDenominator] = array[i];
+        indexOfDenominator++;
+    }
+
+    return denominator;
 }
