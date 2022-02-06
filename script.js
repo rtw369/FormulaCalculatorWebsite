@@ -12,28 +12,22 @@ initialize(formula1);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
-    leftSide = turnIntoArray(leftSide);
-    rightSide = turnIntoArray(rightSide);
+    leftSide = createArray(leftSide);
+    rightSide = createArray(rightSide);
 
     setVariables(leftSide);
     setVariables(rightSide);
 
-    /*
-    let termEndIndex = findTerm(0, rightSide);
+    let term = getTerm(0, rightSide);    
 
-    let term = new Array(termEndIndex + 1);
-
-    for(let i = 0; i < termEndIndex; i++) {
-        term[i] = rightSide[i];
-    }
-
+    console.log("term : \n")
     for(let i = 0; i < term.length; i++) {
         console.log(term[i]);
     }
-    */
 
     let denominator = getDenominator(rightSide);
 
+    console.log("denominator : \n")
     for(let i = 0; i < denominator.length; i++) {
         console.log(denominator[i]);
     }
@@ -43,11 +37,11 @@ function initialize(formula) {
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
     // rearrange
-    //      - findTerm
+    //      - getTerm (completed)
     //      - moveTerm
-    //      - getDenominator
+    //      - getDenominator (completed)
     //      - removeDenominator
-    //      - expand
+    //      - expand - do the inner brackets first
     // calculate
     // return final value
 }
@@ -66,7 +60,7 @@ function divideFormula(formula) {
 }
 
 //add spaces in certain places and split by that spaces to create an array
-function turnIntoArray(expression) {
+function createArray(expression) {
     let modifiedExpression = "";
 
     for(let i = 0; i < expression.length; i++)
@@ -153,17 +147,28 @@ function setVariables(array) {
     }
 }
 
-function findTerm(start, array) {
+function getTerm(start, array) {
     let brackets = 0;
+    let end = -1;
 
-    for(let i = start; i < array.length; i++) {
+    for(let i = start; i <= array.length; i++) {
+        if(i == array.length && end == -1) end = i;
+        
         if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
         
-        if((array[i] == "-" || array[i] == "+") && brackets == 0) return i;
+        if((array[i] == "-" || array[i] == "+") && brackets == 0) end = i;
     }
 
-    return array.length;
+    let term = new Array(end - start);
+    let termIndex = 0;
+
+    for(let i = start; i < end; i++) {
+        term[termIndex] = rightSide[i];
+        termIndex++;
+    }
+
+    return term;
 }
 
 function getDenominator(array) {
@@ -173,23 +178,31 @@ function getDenominator(array) {
 
     for(let i = start; i <= array.length && i > -1; i++) {
         
-        if(i == array.length) {
+        if(i == array.length && end == -1) {
             end = i;
             brackets = -1;
         }
         else if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
 
-        if(brackets == 0 && (array[i] == "+" || array[i] == "-" || array[i] == "*" || array[i] == "/")) end = i;
+        if(brackets == 0 && isOperator(array[i])) end = i;
     }
 
     let denominator = new Array(end - start);
-    let indexOfDenominator = 0;
+    let index = 0;
 
-    for(let i = start; i < denominator.length; i++) {
-        denominator[indexOfDenominator] = array[i];
-        indexOfDenominator++;
+    for(let i = start; i < end; i++) {
+        denominator[index] = array[i];
+        index++;
     }
 
     return denominator;
+}
+
+function isOperator(string) {
+    if(string === "+") return true;
+    else if(string === "-") return true;
+    else if(string === "*") return true;
+    else if(string === "/") return true;
+    else return false;
 }
