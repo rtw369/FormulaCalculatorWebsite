@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = 1/(3+2+1)^2*3";
+let formula1 = "a = 1/(3+2+1)^2*3+2/3+4";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -157,7 +157,10 @@ function getTerm(start, array) {
         if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
         
-        if((array[i] == "-" || array[i] == "+") && brackets == 0) end = i;
+        if((array[i] == "-" || array[i] == "+") && brackets == 0) {
+            end = i;
+            i = array.length;
+        }
     }
 
     let term = new Array(end - start);
@@ -185,7 +188,10 @@ function getDenominator(array) {
         else if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
 
-        if(brackets == 0 && isOperator(array[i])) end = i;
+        if(brackets == 0 && isOperator(array[i])) {
+            end = i;
+            i = array.length;
+        }
     }
 
     let denominator = new Array(end - start);
