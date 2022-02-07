@@ -215,3 +215,10 @@ function isOperator(string) {
     else if(string === "/") return true;
     else return false;
 }
+
+function isVariable(string) {
+    for(let i = 0; i < variables.length; i++) {
+        if(string == variables[i]) return true;
+    }
+    return false;
+}
