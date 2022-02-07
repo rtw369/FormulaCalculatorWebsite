@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = 1/(3+2+1)^2*3+2/3+4";
+let formula1 = "a = 3/2";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -179,11 +179,14 @@ function getDenominator(array) {
     let brackets = 0;
     let end = -1;
 
+    let denominator = ("");
+
+    if(start == 0) return denominator;
+
     for(let i = start; i <= array.length && i > -1; i++) {
         
         if(i == array.length && end == -1) {
             end = i;
-            brackets = -1;
         }
         else if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
@@ -194,7 +197,7 @@ function getDenominator(array) {
         }
     }
 
-    let denominator = new Array(end - start);
+    denominator = new Array(end - start);
     let index = 0;
 
     for(let i = start; i < end; i++) {
