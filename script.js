@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = (2+3)+(-5)*(6*3+4)/(9)";
+let formula1 = "a = ((2/4)/(3+2)/5)";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -25,13 +25,12 @@ function initialize(formula) {
         console.log(term[i]);
     }*/
 
-    /*let denominator = getDenominator(rightSide);
+    let denominator = getDenominator(rightSide);
     
     console.log("denominator : \n")
     for(let i = 0; i < denominator.length; i++) {
         console.log(denominator[i]);
     }
-    */
 
     /*
     let expression = getExpression(rightSide.length - 1, rightSide);
@@ -40,14 +39,15 @@ function initialize(formula) {
         console.log(expression[i]);
     }*/
 
+    /*
     let expression = new Array(0);
     for(let i = rightSide.length - 1; i >=0; i -= expression.length) {
         expression = getExpression(i, rightSide);
         console.log("expression: \n");
         for(let n = 0; n < expression.length; n++) {
             console.log(expression[n]);
-        }    
-    }
+        }
+    }*/
 
     
 
@@ -191,7 +191,7 @@ function getTerm(start, array) {
     return term;
 }
 
-//start from back and progress towards front
+// start from back and progress towards front
 function getExpression(end, array) {
     let brackets = 0;
     let start = -1;
@@ -199,11 +199,13 @@ function getExpression(end, array) {
     for(let i = end; i >= 0; i--) {
         if(i == 0 && start == -1) start = i;
 
+        if(i == end && isOperator(array[i])) return array[i];
+
         if(array[i] == ")") brackets++;
         else if(array[i] == "(") brackets--;
 
         if(isOperator(array[i]) && brackets == 0) {
-            start = i;
+            start = i + 1;
             i = 0;
         }
     }
@@ -220,26 +222,39 @@ function getExpression(end, array) {
 }
 
 function getDenominator(array) {
-    let start = array.indexOf("/") + 1;
+    //let start = array.indexOf("/") + 1;
     let brackets = 0;
     let end = -1;
+    let start = 0;
+    let maxBracket = 1000;
+    // ((2/3)/(3+2)/(5))
+
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "(") brackets++;
+        else if(array[i] == ")") brackets--;
+
+        if(array[i] == "/" && brackets <= maxBracket) {
+            start = i+1;
+            maxBracket = brackets;
+        }
+    }
 
     let denominator = ("");
 
     if(start == 0) return denominator;
 
-    for(let i = start; i <= array.length && i > -1; i++) {
+    brackets = 0;
+    for(let i = start; i <= array.length && i >= 0; i++) {
         
         if(i == array.length && end == -1) {
             end = i;
         }
-        else if(array[i] == "(") brackets++;
-        else if (array[i] == ")") brackets--;
-
-        if(brackets == 0 && isOperator(array[i])) {
+        else if(brackets == 0 && isOperator(array[i])) {
             end = i;
             i = array.length;
         }
+        else if(array[i] == "(") brackets++;
+        else if (array[i] == ")") brackets--;
     }
 
     denominator = new Array(end - start);
@@ -258,6 +273,8 @@ function isOperator(string) {
     else if(string === "-") return true;
     else if(string === "*") return true;
     else if(string === "/") return true;
+    else if(string === "(") return true;
+    else if(string === ")") return true;
     else return false;
 }
 
