@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = 1*(2+3+(4+3))^2";
+let formula1 = "a = (2+3)+(-5)*(6*3+4)/(9)";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -17,14 +17,14 @@ function initialize(formula) {
 
     setVariables(leftSide);
     setVariables(rightSide);
-    /*
-    let term = getTerm(0, rightSide);    
+
+    /*let term = getTerm(0, rightSide);    
 
     console.log("term : \n")
     for(let i = 0; i < term.length; i++) {
         console.log(term[i]);
-    }
-    */
+    }*/
+
     /*let denominator = getDenominator(rightSide);
     
     console.log("denominator : \n")
@@ -32,14 +32,22 @@ function initialize(formula) {
         console.log(denominator[i]);
     }
     */
-    /*
-    let expression = getExpression(12, rightSide);
 
-    console.log("expression: \n");
+    /*
+    let expression = getExpression(rightSide.length - 1, rightSide);
+
     for(let i = 0; i < expression.length; i++) {
         console.log(expression[i]);
+    }*/
+
+    let expression = new Array(0);
+    for(let i = rightSide.length - 1; i >=0; i -= expression.length) {
+        expression = getExpression(i, rightSide);
+        console.log("expression: \n");
+        for(let n = 0; n < expression.length; n++) {
+            console.log(expression[n]);
+        }    
     }
-    */
 
     
 
@@ -195,7 +203,7 @@ function getExpression(end, array) {
         else if(array[i] == "(") brackets--;
 
         if(isOperator(array[i]) && brackets == 0) {
-            start = i   ;
+            start = i;
             i = 0;
         }
     }
@@ -203,7 +211,7 @@ function getExpression(end, array) {
     let expression = new Array(end - start);
     let expressionIndex = 0;
 
-    for(let i = start + 1; i <= end; i++) {
+    for(let i = start; i <= end; i++) {
         expression[expressionIndex] = array[i];
         expressionIndex++;
     }
