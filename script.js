@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "a = ((2/4)/(3+2)/5)";
+let formula1 = "(2/4)/(3+2)/5 + 2/4 + 3/6 = ((2/4)/(3+2)/5)";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -17,29 +17,27 @@ function initialize(formula) {
 
     setVariables(leftSide);
     setVariables(rightSide);
-
-    /*let term = getTerm(0, rightSide);    
+/*
+    let term = getTerm(0, leftSide);    
 
     console.log("term : \n")
     for(let i = 0; i < term.length; i++) {
         console.log(term[i]);
-    }*/
+    }
 
     let denominator = getDenominator(rightSide);
-    
+
     console.log("denominator : \n")
     for(let i = 0; i < denominator.length; i++) {
         console.log(denominator[i]);
     }
 
-    /*
     let expression = getExpression(rightSide.length - 1, rightSide);
 
     for(let i = 0; i < expression.length; i++) {
         console.log(expression[i]);
-    }*/
+    }
 
-    /*
     let expression = new Array(0);
     for(let i = rightSide.length - 1; i >=0; i -= expression.length) {
         expression = getExpression(i, rightSide);
@@ -48,6 +46,8 @@ function initialize(formula) {
             console.log(expression[n]);
         }
     }*/
+
+    removeDenominator();
 
     
 
@@ -61,6 +61,18 @@ function initialize(formula) {
     //      - expand - do the inner brackets first
     // calculate
     // return final value
+}
+
+function removeDenominator() {
+    let term;
+    let remove = new Array(0);
+    for(let i = 0; i < leftSide.length; i += term.length) {
+        term = getTerm(i, leftSide);
+        remove.push("*");
+        remove = remove.concat(getDenominator(term));
+    }
+
+    console.log(remove);
 }
 
 //when the program recieves the formula, take out the empty characters within a formula
@@ -168,13 +180,16 @@ function getTerm(start, array) {
     let brackets = 0;
     let end = -1;
 
+    // +(2/4)/(3+2)/5+2/4+3/6
+
     for(let i = start; i <= array.length; i++) {
         if(i == array.length && end == -1) end = i;
         
         if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
         
-        if((array[i] == "-" || array[i] == "+") && brackets == 0) {
+        
+        if(i != start && (array[i] == "-" || array[i] == "+") && brackets == 0) {
             end = i;
             i = array.length;
         }
@@ -184,7 +199,7 @@ function getTerm(start, array) {
     let termIndex = 0;
 
     for(let i = start; i < end; i++) {
-        term[termIndex] = rightSide[i];
+        term[termIndex] = array[i];
         termIndex++;
     }
 
@@ -222,12 +237,11 @@ function getExpression(end, array) {
 }
 
 function getDenominator(array) {
-    //let start = array.indexOf("/") + 1;
     let brackets = 0;
     let end = -1;
     let start = 0;
     let maxBracket = 1000;
-    // ((2/3)/(3+2)/(5))
+
 
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") brackets++;
