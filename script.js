@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "(2/4)/(3+2)/5 + 2/4 + 3/6 = ((2/4)/(3+2)/5)";
+let formula1 = "2/4 + 5/3 - 6/7 = 9/2";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -49,15 +49,13 @@ function initialize(formula) {
 
     removeDenominator();
 
-    
-
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
     // rearrange
     //      - getTerm (completed)
     //      - moveTerm
     //      - getDenominator (completed)
-    //      - removeDenominator
+    //      - removeDenominator (completed)
     //      - expand - do the inner brackets first
     // calculate
     // return final value
@@ -66,13 +64,60 @@ function initialize(formula) {
 function removeDenominator() {
     let term;
     let remove = new Array(0);
+    let denominator = new Array(0);
+    let expression = new Array(0);
+    let leftFinal = new Array(0);
+    let rightFinal = new Array(0);
+
     for(let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         remove.push("*");
         remove = remove.concat(getDenominator(term));
     }
 
-    console.log(remove);
+    for(let i = 0; i < rightSide.length; i += term.length) {
+        term = getTerm(i, rightSide);
+        remove.push("*");
+        remove = remove.concat(getDenominator(term));
+    }
+
+    let modifiedTerm = new Array(0);
+    let modifiedRemove = new Array(0);
+
+    for(let i = 0; i < leftSide.length; i += term.length) {
+        term = getTerm(i, leftSide);
+        modifiedTerm = copyArray(term);
+        modifiedRemove = copyArray(remove);
+        denominator = getDenominator(term);
+        for(let n = remove.length - 1; n >= 0; n -= expression.length) {
+            expression = getExpression(n, remove);
+            if(compareArray(denominator, expression)) {
+                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                modifiedRemove.splice(n - 1, 2);
+                leftFinal = leftFinal + modifiedTerm.concat(modifiedRemove);
+                n = -1;
+            }
+        }
+    }
+
+    for(let i = 0; i < rightSide.length; i += term.length) {
+        term = getTerm(i, rightSide);
+        modifiedTerm = copyArray(term);
+        modifiedRemove = copyArray(remove);
+        denominator = getDenominator(term);
+        for(let n = remove.length - 1; n >= 0; n -= expression.length) {
+            expression = getExpression(n, remove);
+            if(compareArray(denominator, expression)) {
+                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                modifiedRemove.splice(n - 1, 2);
+                rightFinal = rightFinal + modifiedTerm.concat(modifiedRemove);
+                n = -1;
+            }
+        }
+    }
+
+    leftSide = copyArray(leftFinal);
+    rightSide = copyArray(rightFinal);
 }
 
 //when the program recieves the formula, take out the empty characters within a formula
@@ -242,7 +287,6 @@ function getDenominator(array) {
     let start = 0;
     let maxBracket = 1000;
 
-
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") brackets++;
         else if(array[i] == ")") brackets--;
@@ -282,6 +326,23 @@ function getDenominator(array) {
     return denominator;
 }
 
+function getDenominatorIndex(array) {
+    let brackets = 0;
+    let start = -1;
+    let maxBracket = 1000;
+
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "(") brackets++;
+        else if(array[i] == ")") brackets--;
+
+        if(array[i] == "/" && brackets <= maxBracket) {
+            start = i;
+            maxBracket = brackets;
+        }
+    }
+    return start;
+}
+
 function isOperator(string) {
     if(string === "+") return true;
     else if(string === "-") return true;
@@ -297,4 +358,21 @@ function isVariable(string) {
         if(string == variables[i]) return true;
     }
     return false;
+}
+
+function compareArray(array1, array2) {
+    if(array1.length !=  array2.length) return false;
+    for(let i = 0; i < array1.length; i++) {
+        if(array1[i] != array2[i]) return false;
+    }
+    return true;
+}
+
+function copyArray(array) {
+    let result = new Array(array.length);
+    for(let i = 0; i < array.length; i++) {
+        result[i] = array[i];
+    }
+
+    return result;
 }
