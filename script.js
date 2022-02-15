@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "2/4/5 = 1";
+let formula1 = "((2+3)(5+4)^2)^3 = (2+1)^(3+4+5)";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -41,13 +41,16 @@ function initialize(formula) {
         }
     }*/
 
-    
+    /*
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
 
     console.log("Left Side "+leftSide);
     console.log("Right Side "+rightSide);
+    */
+
+    expandPower(rightSide);
 
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
@@ -59,6 +62,42 @@ function initialize(formula) {
     //      - expand - do the inner brackets first
     // calculate
     // return final value
+}
+
+function expandPower(array) {
+    let frontExpression = new Array(0);
+    let backExpression = new Array(0);
+    let frontArray = new Array(0);
+    let backArray = new Array(0);
+    let modifiedArray = copyArray(array);
+    let finalArray = copyArray(array);
+    let powerIndex = modifiedArray.indexOf("^");
+
+    while(powerIndex != -1) {
+        frontExpression = getFrontExpression(powerIndex - 1, modifiedArray);
+        backExpression = getBackExpression(powerIndex + 1, modifiedArray);
+        frontArray = modifiedArray.splice(0, powerIndex);
+        backArray = modifiedArray.splice(powerIndex + backExpression.length + 1);
+
+
+        // get the value of backExpression and repeat for that amount
+        for(let i = 1; i < 3; i++) {
+            frontArray = frontArray.concat(frontExpression);
+        }
+
+        modifiedArray = frontArray.concat(backArray);
+        
+        console.log(frontExpression);
+        console.log(backExpression);
+        console.log(modifiedArray);
+        powerIndex = modifiedArray.indexOf("^");
+    }
+
+    console.log(modifiedArray);
+}
+
+function expand() {
+
 }
 
 function removeDenominator() {
@@ -96,7 +135,7 @@ function removeDenominator() {
         modifiedRemove = copyArray(remove);
         denominator = getDenominator(term);
         for(let n = remove.length - 1; n >= 0; n -= expression.length) {
-            expression = getExpression(n, remove);
+            expression = getFrontExpression(n, remove);
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - 1, 2);
@@ -115,7 +154,7 @@ function removeDenominator() {
         modifiedRemove = copyArray(remove);
         denominator = getDenominator(term);
         for(let n = remove.length - 1; n >= 0; n -= expression.length) {
-            expression = getExpression(n, remove);
+            expression = getFrontExpression(n, remove);
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - 1, 2);
@@ -264,28 +303,52 @@ function getTerm(start, array) {
 }
 
 // start from back and progress towards front
-function getExpression(end, array) {
+function getFrontExpression(end, array) {
     let brackets = 0;
     let start = -1;
 
     for(let i = end; i >= 0; i--) {
         if(i == 0 && start == -1) start = i;
 
-        if(i == end && isOperator(array[i])) return array[i];
-
         if(array[i] == ")") brackets++;
-        else if(array[i] == "(") brackets--;
 
         if(isOperator(array[i]) && brackets == 0) {
             start = i + 1;
-            i = 0;
+            i = -1;
         }
+
+        if(array[i] == "(") brackets--;
     }
+
 
     let expression = new Array(end - start);
     let expressionIndex = 0;
 
     for(let i = start; i <= end; i++) {
+        expression[expressionIndex] = array[i];
+        expressionIndex++;
+    }
+
+    return expression;
+}
+
+function getBackExpression(start, array) {
+    let brackets = 0;
+    let end = -1;
+
+    for(let i = start; i <= array.length; i++) {
+        if(i == array.length) end = i;
+        if(array[i] == "(") brackets++;
+        if(isOperator(array[i]) && brackets == 0) {
+            end = i;
+            i = array.length + 1;
+        }
+        if(array[i] == ")") brackets--;
+    }
+
+    let expression = new Array(end - start);
+    let expressionIndex = 0;
+    for(let i = start; i < end; i++) {
         expression[expressionIndex] = array[i];
         expressionIndex++;
     }
