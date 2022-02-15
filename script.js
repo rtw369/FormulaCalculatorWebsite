@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "2/4 + 5/3 - 6/7 = 9/2";
+let formula1 = "2/4/5 = 1";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -19,25 +19,19 @@ function initialize(formula) {
     setVariables(rightSide);
 /*
     let term = getTerm(0, leftSide);    
-
     console.log("term : \n")
     for(let i = 0; i < term.length; i++) {
         console.log(term[i]);
     }
-
     let denominator = getDenominator(rightSide);
-
     console.log("denominator : \n")
     for(let i = 0; i < denominator.length; i++) {
         console.log(denominator[i]);
     }
-
     let expression = getExpression(rightSide.length - 1, rightSide);
-
     for(let i = 0; i < expression.length; i++) {
         console.log(expression[i]);
     }
-
     let expression = new Array(0);
     for(let i = rightSide.length - 1; i >=0; i -= expression.length) {
         expression = getExpression(i, rightSide);
@@ -47,7 +41,13 @@ function initialize(formula) {
         }
     }*/
 
-    removeDenominator();
+    
+    while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
+        removeDenominator();
+    }
+
+    console.log("Left Side "+leftSide);
+    console.log("Right Side "+rightSide);
 
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
@@ -71,14 +71,20 @@ function removeDenominator() {
 
     for(let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
-        remove.push("*");
-        remove = remove.concat(getDenominator(term));
+        denominator = getDenominator(term)
+        if(denominator != "") {
+            remove.push("*");
+            remove = remove.concat(denominator);
+        }
     }
 
     for(let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
-        remove.push("*");
-        remove = remove.concat(getDenominator(term));
+        denominator = getDenominator(term)
+        if(denominator != "") {
+            remove.push("*");
+            remove = remove.concat(denominator);
+        }
     }
 
     let modifiedTerm = new Array(0);
@@ -94,8 +100,11 @@ function removeDenominator() {
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - 1, 2);
-                leftFinal = leftFinal + modifiedTerm.concat(modifiedRemove);
+                leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
+            }
+            else if(n == 0 && !compareArray(denominator, expression)) {
+                leftFinal = leftFinal.concat(term.concat(remove));
             }
         }
     }
@@ -110,8 +119,11 @@ function removeDenominator() {
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - 1, 2);
-                rightFinal = rightFinal + modifiedTerm.concat(modifiedRemove);
+                rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
+            }
+            else if(n == 0 && !compareArray(denominator, expression)) {
+                rightFinal = rightFinal.concat(term.concat(remove));
             }
         }
     }
