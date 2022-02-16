@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "((2+3)(5+4)^2)^3 = (2+1)^(3+4+5)";
+let formula1 = "2/(3)^2 = 2/3";
 let formula2 = "a = b + c";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -41,16 +41,15 @@ function initialize(formula) {
         }
     }*/
 
-    /*
+    leftSide = expandPower(leftSide);  
+    rightSide = expandPower(rightSide);
+
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
 
-    console.log("Left Side "+leftSide);
-    console.log("Right Side "+rightSide);
-    */
-
-    expandPower(rightSide);
+    console.log(leftSide);
+    console.log(rightSide);
 
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
@@ -69,31 +68,41 @@ function expandPower(array) {
     let backExpression = new Array(0);
     let frontArray = new Array(0);
     let backArray = new Array(0);
-    let modifiedArray = copyArray(array);
     let finalArray = copyArray(array);
-    let powerIndex = modifiedArray.indexOf("^");
+    let powerIndex = finalArray.indexOf("^");
 
     while(powerIndex != -1) {
-        frontExpression = getFrontExpression(powerIndex - 1, modifiedArray);
-        backExpression = getBackExpression(powerIndex + 1, modifiedArray);
-        frontArray = modifiedArray.splice(0, powerIndex);
-        backArray = modifiedArray.splice(powerIndex + backExpression.length + 1);
+        frontExpression = getFrontExpression(powerIndex - 1, finalArray);
+        backExpression = getBackExpression(powerIndex + 1, finalArray);
 
-
-        // get the value of backExpression and repeat for that amount
-        for(let i = 1; i < 3; i++) {
-            frontArray = frontArray.concat(frontExpression);
+        if(parseInt(backExpression[0]) == 0) {
+            frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
+            backArray = finalArray.splice(powerIndex + backExpression.length + 1);
+            frontArray.push("(");
+            frontArray.push("1");
+            frontArray.push(")");
+            finalArray = frontArray.concat(backArray);
+            powerIndex = finalArray.indexOf("^");
         }
+        else {
+            frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
+            backArray = finalArray.splice(powerIndex + backExpression.length + 1);
+            frontArray.push("(");
+            frontArray = frontArray.concat(frontExpression);
 
-        modifiedArray = frontArray.concat(backArray);
-        
-        console.log(frontExpression);
-        console.log(backExpression);
-        console.log(modifiedArray);
-        powerIndex = modifiedArray.indexOf("^");
+            // get the value of backExpression and repeat for that amount
+            for(let i = 1; i < parseInt(backExpression[0]); i++) {
+                frontArray.push("*");
+                frontArray = frontArray.concat(frontExpression);
+            }
+
+            frontArray.push(")");
+            finalArray = frontArray.concat(backArray);
+            powerIndex = finalArray.indexOf("^");
+        }
     }
 
-    console.log(modifiedArray);
+    return finalArray;
 }
 
 function expand() {
@@ -101,7 +110,7 @@ function expand() {
 }
 
 function removeDenominator() {
-    let term;
+    let term = new Array(0);
     let remove = new Array(0);
     let denominator = new Array(0);
     let expression = new Array(0);
@@ -110,7 +119,7 @@ function removeDenominator() {
 
     for(let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
-        denominator = getDenominator(term)
+        denominator = getDenominator(term);
         if(denominator != "") {
             remove.push("*");
             remove = remove.concat(denominator);
@@ -119,7 +128,7 @@ function removeDenominator() {
 
     for(let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
-        denominator = getDenominator(term)
+        denominator = getDenominator(term);
         if(denominator != "") {
             remove.push("*");
             remove = remove.concat(denominator);
@@ -138,7 +147,7 @@ function removeDenominator() {
             expression = getFrontExpression(n, remove);
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                modifiedRemove.splice(n - 1, 2);
+                modifiedRemove.splice(n - expression.length, expression.length + 1);
                 leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
             }
@@ -157,7 +166,7 @@ function removeDenominator() {
             expression = getFrontExpression(n, remove);
             if(compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                modifiedRemove.splice(n - 1, 2);
+                modifiedRemove.splice(n - expression.length, expression.length + 1);
                 rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
             }
@@ -310,16 +319,22 @@ function getFrontExpression(end, array) {
     for(let i = end; i >= 0; i--) {
         if(i == 0 && start == -1) start = i;
 
+        
+
         if(array[i] == ")") brackets++;
 
-        if(isOperator(array[i]) && brackets == 0) {
+        if(brackets == 0 && isOperator(array[i]) && i ==  end) return array[i];
+        else if(isOperator(array[i]) && brackets == 0) {
             start = i + 1;
+            i = -1;
+        }
+        else if(brackets == 1 && array[i] == "(") {
+            start = i;
             i = -1;
         }
 
         if(array[i] == "(") brackets--;
     }
-
 
     let expression = new Array(end - start);
     let expressionIndex = 0;
@@ -382,11 +397,12 @@ function getDenominator(array) {
         if(i == array.length && end == -1) {
             end = i;
         }
+
+        if(array[i] == "(") brackets++;
         else if(brackets == 0 && isOperator(array[i])) {
             end = i;
             i = array.length;
         }
-        else if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
     }
 
