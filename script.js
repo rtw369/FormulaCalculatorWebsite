@@ -1,6 +1,6 @@
 // sample formulas
-let formula1 = "2/(3)^2 = 2/3";
-let formula2 = "a = b + c";
+let formula1 = "(2+3)(4) = 2+(4+3)";
+let formula2 = "(3)/(1+2)*(3+4) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -8,7 +8,7 @@ let rightSide = "";
 let variables = new Array();
 let values = new Array();
 
-initialize(formula1);
+initialize(formula2);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
@@ -47,6 +47,8 @@ function initialize(formula) {
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
+
+    //expand(leftSide);
 
     console.log(leftSide);
     console.log(rightSide);
@@ -105,8 +107,27 @@ function expandPower(array) {
     return finalArray;
 }
 
-function expand() {
+function expand(array) {
+    let bracket = 0;
+    let numOfBrackets = 0;
+    let lastBracketIndex = 0;
+    let secondBracket = 0; // start index of second most inner bracket
 
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "(") {
+            bracket++;
+            if(bracket > numOfBrackets) {
+                numOfBrackets = bracket;
+                secondBracket = lastBracketIndex;
+            }
+            if(bracket >= numOfBrackets) lastBracketIndex = i;
+        }
+        if(array[i] == ")") bracket--;
+    }
+
+    let expression = getBackExpression(secondBracket, array);
+
+    console.log(expression);
 }
 
 function removeDenominator() {
