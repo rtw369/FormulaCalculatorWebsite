@@ -1,6 +1,6 @@
 // sample formulas
 let formula1 = "(2+3)(4) = 2+(4+3)";
-let formula2 = "(3)/(1+2)*(3+4) = (9)^3";
+let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -8,7 +8,7 @@ let rightSide = "";
 let variables = new Array();
 let values = new Array();
 
-initialize(formula2);
+initialize(formula1);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
@@ -40,18 +40,20 @@ function initialize(formula) {
             console.log(expression[n]);
         }
     }*/
-
+/*
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
 
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
+*/
+    expand(leftSide);
 
-    //expand(leftSide);
+    //console.log(leftSide);
+    //console.log(rightSide);
 
-    console.log(leftSide);
-    console.log(rightSide);
+    //console.log(getFrontExpression(5,"(5)*(4)"))
 
     // get user input and set values
     // find which variable to solve for - a variable that has undefined as its value
@@ -340,8 +342,6 @@ function getFrontExpression(end, array) {
     for(let i = end; i >= 0; i--) {
         if(i == 0 && start == -1) start = i;
 
-        
-
         if(array[i] == ")") brackets++;
 
         if(brackets == 0 && isOperator(array[i]) && i ==  end) return array[i];
@@ -349,10 +349,11 @@ function getFrontExpression(end, array) {
             start = i + 1;
             i = -1;
         }
+        /*
         else if(brackets == 1 && array[i] == "(") {
             start = i;
             i = -1;
-        }
+        }*/
 
         if(array[i] == "(") brackets--;
     }
@@ -375,9 +376,15 @@ function getBackExpression(start, array) {
     for(let i = start; i <= array.length; i++) {
         if(i == array.length) end = i;
         if(array[i] == "(") brackets++;
-        if(isOperator(array[i]) && brackets == 0) {
-            end = i;
-            i = array.length + 1;
+        if(isOperator(array[i])){
+            if(brackets == 0) {
+                end = i;
+                i = array.length + 1;
+            }
+            else if(brackets == 1 && array[i] == ")") {
+                end = i+1;
+                i = array.length + 1;
+            }
         }
         if(array[i] == ")") brackets--;
     }
