@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "(2+3)(4) = 2+(4+3)";
+let formula1 = "((2+3)((4(6))(5))(5+3)) = 2+(4+3)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -112,9 +112,10 @@ function expandPower(array) {
 function expand(array) {
     let bracket = 0;
     let numOfBrackets = 0;
-    let lastBracketIndex = 0;
-    let secondBracket = 0; // start index of second most inner bracket
+    let lastBracketIndex = -1;
+    let secondBracket = -1; // start index of second most inner bracket
 
+    //find the second most inner bracket
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") {
             bracket++;
@@ -127,7 +128,25 @@ function expand(array) {
         if(array[i] == ")") bracket--;
     }
 
-    let expression = getBackExpression(secondBracket, array);
+    //get the every expressions within the brackets
+    bracket = 1;
+    let end = -1;
+    for(let i = secondBracket + 1; i <= array.length; i++) {
+        if(i == array.length) end = i + 1;
+        if(array[i] == "(") bracket++;
+        if(array[i] == ")") {
+            bracket--;
+            if(bracket == 0) {
+                end = i + 1;
+                i = array.length +1;
+            }
+        }
+    }
+
+    let expression = new Array(0);
+    for(let i = secondBracket + 1 ; i < end - 1; i++) {
+        expression.push(array[i]);
+    }
 
     console.log(expression);
 }
