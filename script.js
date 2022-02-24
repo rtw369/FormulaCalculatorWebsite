@@ -157,11 +157,49 @@ function expand(array) {
     console.log(expression);
 
     let firstExpression = new Array(0);
+    let secondExpression = new Array(0);
+    let firstTerm = new Array(0);
+    let secondTerm = new Array(0); 
 
+    while(expression.includes("(")) {
+        firstExpression = getBackExpression(0, expression);
+        switch(expression[firstExpression.length]) {
+            case "+":
+                console.log("plus");
+                secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                console.log(secondExpression);
+                break;
+
+            case "-":
+                console.log("minus");
+                secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                console.log(secondExpression);
+                break;
+
+            case "*":
+                console.log("multiply");
+                secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                console.log(secondExpression);
+                break;
+
+            case "(":
+                console.log("bracket");
+                secondExpression = expression.slice(firstExpression.length);
+                firstExpression.push("*");
+                expression = firstExpression.concat(secondExpression);
+                console.log(expression);
+                break;
+
+            default:
+        }
+        break;
+    }
+/*
     for(let i = 0; i < expression.length; i += firstExpression.length) {
         firstExpression = getBackExpression(i, expression);
         console.log(firstExpression);
     }
+*/
 }
 
 function removeDenominator() {
