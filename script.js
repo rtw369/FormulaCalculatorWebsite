@@ -1,5 +1,5 @@
 // sample formulas
-let formula1 = "((2+3)((4(6))(5))(5+3)) = 2+(4+3)";
+let formula1 = "((3)(6(4))(5)) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -48,6 +48,10 @@ function initialize(formula) {
         removeDenominator();
     }
 */
+
+    //rightSide = expandPower(rightSide);
+    //console.log("rightSide \n");
+    //console.log(rightSide);
     expand(leftSide);
 
     //console.log(leftSide);
@@ -78,6 +82,8 @@ function expandPower(array) {
     while(powerIndex != -1) {
         frontExpression = getFrontExpression(powerIndex - 1, finalArray);
         backExpression = getBackExpression(powerIndex + 1, finalArray);
+
+        console.log(backExpression);
 
         if(parseInt(backExpression[0]) == 0) {
             frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
@@ -149,6 +155,13 @@ function expand(array) {
     }
 
     console.log(expression);
+
+    let firstExpression = new Array(0);
+
+    for(let i = 0; i < expression.length; i += firstExpression.length) {
+        firstExpression = getBackExpression(i, expression);
+        console.log(firstExpression);
+    }
 }
 
 function removeDenominator() {
@@ -397,6 +410,10 @@ function getBackExpression(start, array) {
         if(array[i] == "(") brackets++;
         if(isOperator(array[i])){
             if(brackets == 0) {
+                end = i;
+                i = array.length + 1;
+            }
+            else if(i != start && brackets == 1 && array[i] == "(") {
                 end = i;
                 i = array.length + 1;
             }
