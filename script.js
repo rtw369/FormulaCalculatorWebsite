@@ -1,12 +1,11 @@
-// sample formulas
 let formula1 = "((3)(6(4))(5)) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
 let rightSide = "";
-let variables = new Array();
-let values = new Array();
+let variables = new Array(0);
+let values = new Array(0);
 
 initialize(formula1);
 
@@ -17,29 +16,7 @@ function initialize(formula) {
 
     setVariables(leftSide);
     setVariables(rightSide);
-/*
-    let term = getTerm(0, leftSide);    
-    console.log("term : \n")
-    for(let i = 0; i < term.length; i++) {
-        console.log(term[i]);
-    }
-    let denominator = getDenominator(rightSide);
-    console.log("denominator : \n")
-    for(let i = 0; i < denominator.length; i++) {
-        console.log(denominator[i]);
-    }
-    let expression = getExpression(rightSide.length - 1, rightSide);
-    for(let i = 0; i < expression.length; i++) {
-        console.log(expression[i]);
-    }
-    let expression = new Array(0);
-    for(let i = rightSide.length - 1; i >=0; i -= expression.length) {
-        expression = getExpression(i, rightSide);
-        console.log("expression: \n");
-        for(let n = 0; n < expression.length; n++) {
-            console.log(expression[n]);
-        }
-    }*/
+
 /*
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
@@ -52,6 +29,7 @@ function initialize(formula) {
     //rightSide = expandPower(rightSide);
     //console.log("rightSide \n");
     //console.log(rightSide);
+    
     expand(leftSide);
 
     //console.log(leftSide);
@@ -59,16 +37,11 @@ function initialize(formula) {
 
     //console.log(getFrontExpression(5,"(5)*(4)"))
 
-    // get user input and set values
-    // find which variable to solve for - a variable that has undefined as its value
-    // rearrange
     //      - getTerm (completed)
     //      - moveTerm
     //      - getDenominator (completed)
     //      - removeDenominator (completed)
     //      - expand - do the inner brackets first
-    // calculate
-    // return final value
 }
 
 function expandPower(array) {
@@ -100,7 +73,6 @@ function expandPower(array) {
             frontArray.push("(");
             frontArray = frontArray.concat(frontExpression);
 
-            // get the value of backExpression and repeat for that amount
             for(let i = 1; i < parseInt(backExpression[0]); i++) {
                 frontArray.push("*");
                 frontArray = frontArray.concat(frontExpression);
@@ -273,20 +245,17 @@ function removeDenominator() {
     rightSide = copyArray(rightFinal);
 }
 
-//when the program recieves the formula, take out the empty characters within a formula
 function removeSpaces(formula) {
     let result = formula.replaceAll(" ", "");
     return result;
 }
 
-//then divide the formula into two strings at = sign
 function divideFormula(formula) {
     let indexOfEqual =  formula.indexOf("=");
     leftSide = formula.substring(0, indexOfEqual);
     rightSide = formula.substring(indexOfEqual+1);
 }
 
-//add spaces in certain places and split by that spaces to create an array
 function createArray(expression) {
     let modifiedExpression = "";
 
@@ -332,7 +301,6 @@ function createArray(expression) {
 
     let finalArray = modifiedExpression.split(" ");
 
-    // delete any empty string in the array
     for(let i = 0; i < finalArray.length; i++)
     {
         if(finalArray[i] === "") {
@@ -378,8 +346,6 @@ function getTerm(start, array) {
     let brackets = 0;
     let end = -1;
 
-    // +(2/4)/(3+2)/5+2/4+3/6
-
     for(let i = start; i <= array.length; i++) {
         if(i == array.length && end == -1) end = i;
         
@@ -404,7 +370,6 @@ function getTerm(start, array) {
     return term;
 }
 
-// start from back and progress towards front
 function getFrontExpression(end, array) {
     let brackets = 0;
     let start = -1;
