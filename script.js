@@ -1,4 +1,4 @@
-let formula1 = "((3)(6(4))(5)) = (4+3)^2(4)";
+let formula1 = "((1)*(2)*(3)) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -93,6 +93,9 @@ function expand(array) {
     let lastBracketIndex = -1;
     let secondBracket = -1; // start index of second most inner bracket
 
+    let frontArray = new Array(0);
+    let backArray = new Array(0);
+
     //find the second most inner bracket
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") {
@@ -126,32 +129,59 @@ function expand(array) {
         expression.push(array[i]);
     }
 
-    console.log(expression);
-
     let firstExpression = new Array(0);
     let secondExpression = new Array(0);
+    let tempExpression = new Array(0);
     let firstTerm = new Array(0);
-    let secondTerm = new Array(0); 
+    let secondTerm = new Array(0);
+    let length = 0;
 
     while(expression.includes("(")) {
+        tempExpression = new Array(0);
+        length = 0;
         firstExpression = getBackExpression(0, expression);
+        console.log(firstExpression);
         switch(expression[firstExpression.length]) {
             case "+":
                 console.log("plus");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
-                console.log(secondExpression);
+                tempExpression.push("(");
+
+                tempExpression.push(")");
                 break;
 
             case "-":
                 console.log("minus");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
-                console.log(secondExpression);
+                tempExpression.push("(");
+                
+                tempExpression.push(")");
                 break;
 
             case "*":
                 console.log("multiply");
+                tempExpression.push("(");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
-                console.log(secondExpression);
+                length = firstExpression.length + 1 + secondExpression.length;
+
+                if(firstExpression[0] == "(") {
+                    firstExpression = firstExpression.slice(1,firstExpression.length - 1);
+                }
+                if(secondExpression[0] == "(") {
+                    secondExpression = secondExpression.slice(1,secondExpression.length - 1);
+                }
+
+                for(let i = 0; i < firstExpression.length; i += firstTerm.length) {
+                    firstTerm = getTerm(i, firstExpression);
+                    for(let n = 0; n < secondExpression.length; n += secondTerm.length) {
+                        secondTerm = getTerm(n, secondExpression);
+                        if(tempExpression.length != 1) tempExpression.push("+");
+                        tempExpression = tempExpression.concat(firstTerm);
+                        tempExpression.push("*");
+                        tempExpression = tempExpression.concat(secondTerm);
+                    }
+                }
+                tempExpression.push(")");
                 break;
 
             case "(":
@@ -159,12 +189,22 @@ function expand(array) {
                 secondExpression = expression.slice(firstExpression.length);
                 firstExpression.push("*");
                 expression = firstExpression.concat(secondExpression);
-                console.log(expression);
+                break;
+
+            case undefined:
+                console.log("end bracket");
+                if(firstExpression[0] == "(") {
+                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
+                }
+                expression = copyArray(firstExpression);
                 break;
 
             default:
         }
-        break;
+
+        expression.splice(0, length);
+        expression = tempExpression.concat(expression);
+        console.log(expression);
     }
 /*
     for(let i = 0; i < expression.length; i += firstExpression.length) {
