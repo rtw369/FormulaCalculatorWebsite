@@ -1,4 +1,4 @@
-let formula1 = "((2)-(-4+3-5)) = (4+3)^2(4)";
+let formula1 = "((2+3)(((4)(5))(6))) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -29,10 +29,17 @@ function initialize(formula) {
     //rightSide = expandPower(rightSide);
     //console.log("rightSide \n");
     //console.log(rightSide);
-    
-    expand(leftSide);
 
-    //console.log(leftSide);
+    while(leftSide.includes("(")) {
+        leftSide = expand(leftSide);
+    }
+    /*
+    while(rightSide.includes("(")) {
+        rightSide = expand(rightSide);
+    }
+    */
+
+    console.log(leftSide);
     //console.log(rightSide);
 
     //console.log(getFrontExpression(5,"(5)*(4)"))
@@ -55,8 +62,6 @@ function expandPower(array) {
     while(powerIndex != -1) {
         frontExpression = getFrontExpression(powerIndex - 1, finalArray);
         backExpression = getBackExpression(powerIndex + 1, finalArray);
-
-        console.log(backExpression);
 
         if(parseInt(backExpression[0]) == 0) {
             frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
@@ -96,7 +101,7 @@ function expand(array) {
     let frontArray = new Array(0);
     let backArray = new Array(0);
 
-    //find the second most inner bracket
+    //find secondBracket
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") {
             bracket++;
@@ -129,6 +134,9 @@ function expand(array) {
         expression.push(array[i]);
     }
 
+    frontArray = array.slice(0, secondBracket + 1);
+    backArray = array.slice(secondBracket + expression.length + 1);
+
     let firstExpression = new Array(0);
     let secondExpression = new Array(0);
     let tempExpression = new Array(0);
@@ -140,10 +148,8 @@ function expand(array) {
         tempExpression = new Array(0);
         length = 0;
         firstExpression = getBackExpression(0, expression);
-        console.log(firstExpression);
         switch(expression[firstExpression.length]) {
             case "+":
-                console.log("plus");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 tempExpression.push("(");
                 length = firstExpression.length + 1 + secondExpression.length;
@@ -156,7 +162,6 @@ function expand(array) {
                 }
 
                 tempExpression = tempExpression.concat(firstExpression);
-                console.log(secondExpression);
 
                 if(secondExpression[0] == "+") {
                     secondExpression.splice(0,1);
@@ -174,7 +179,6 @@ function expand(array) {
                 break;
 
             case "-":
-                console.log("minus");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
                 tempExpression.push("(");
@@ -201,7 +205,6 @@ function expand(array) {
                 break;
 
             case "*":
-                console.log("multiply");
                 tempExpression.push("(");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
@@ -227,14 +230,12 @@ function expand(array) {
                 break;
 
             case "(":
-                console.log("bracket");
                 secondExpression = expression.slice(firstExpression.length);
                 firstExpression.push("*");
                 expression = firstExpression.concat(secondExpression);
                 break;
 
             case undefined:
-                console.log("end bracket");
                 if(firstExpression[0] == "(") {
                     firstExpression = firstExpression.slice(1, firstExpression.length - 1);
                 }
@@ -246,15 +247,14 @@ function expand(array) {
 
         expression.splice(0, length);
         expression = tempExpression.concat(expression);
-        console.log(expression);
-        break;
     }
-/*
-    for(let i = 0; i < expression.length; i += firstExpression.length) {
-        firstExpression = getBackExpression(i, expression);
-        console.log(firstExpression);
-    }
-*/
+
+    let finalArray = new Array(0);
+    finalArray = finalArray.concat(frontArray);
+    finalArray = finalArray.concat(expression);
+    finalArray = finalArray.concat(backArray);
+
+    return finalArray;
 }
 
 function removeDenominator() {
