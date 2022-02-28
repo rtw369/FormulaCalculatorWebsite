@@ -1,4 +1,4 @@
-let formula1 = "((2)+(-4+3)) = (4+3)^2(4)";
+let formula1 = "((2)-(-4+3-5)) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -176,8 +176,27 @@ function expand(array) {
             case "-":
                 console.log("minus");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                length = firstExpression.length + 1 + secondExpression.length;
                 tempExpression.push("(");
                 
+                if(firstExpression[0] == "(") {
+                    firstExpression = firstExpression.slice(1,firstExpression.length - 1);
+                }
+                if(secondExpression[0] == "(") {
+                    secondExpression = secondExpression.slice(1,secondExpression.length - 1);
+                }
+
+                tempExpression = tempExpression.concat(firstExpression);
+
+                for(let i = 0; i < secondExpression.length; i += secondTerm.length) {
+                    secondTerm = getTerm(i, secondExpression);
+                    if(secondTerm[0] == "+") secondTerm[0] = "-";
+                    else if(secondTerm[0] == "-") secondTerm[0] = "+";
+                    else tempExpression.push("-");
+
+                    tempExpression = tempExpression.concat(secondTerm);
+                }
+
                 tempExpression.push(")");
                 break;
 
@@ -228,6 +247,7 @@ function expand(array) {
         expression.splice(0, length);
         expression = tempExpression.concat(expression);
         console.log(expression);
+        break;
     }
 /*
     for(let i = 0; i < expression.length; i += firstExpression.length) {
