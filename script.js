@@ -1,4 +1,4 @@
-let formula1 = "(1+2)/(3+4) = (5)^2";
+let formula1 = "(-(2+3)) = (5)^2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -7,7 +7,7 @@ let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
 
-initialize(formula2);
+initialize(formula1);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
@@ -16,7 +16,6 @@ function initialize(formula) {
 
     setVariables(leftSide);
     setVariables(rightSide);
-
 
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
