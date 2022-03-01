@@ -1,4 +1,4 @@
-let formula1 = "((2+3)(((4)(5))(6))) = (4+3)^2(4)";
+let formula1 = "(((5)-(6))+(5)(6)) = (4+3)^2(4)";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -150,7 +150,9 @@ function expand(array) {
         firstExpression = getBackExpression(0, expression);
         switch(expression[firstExpression.length]) {
             case "+":
-                secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                secondExpression = expression.splice(firstExpression.length + 1);
+                secondExpression = expand(secondExpression);
+
                 tempExpression.push("(");
                 length = firstExpression.length + 1 + secondExpression.length;
 
@@ -179,7 +181,9 @@ function expand(array) {
                 break;
 
             case "-":
-                secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                secondExpression = expression.splice(firstExpression.length + 1);
+                secondExpression = expand(secondExpression);
+
                 length = firstExpression.length + 1 + secondExpression.length;
                 tempExpression.push("(");
                 
