@@ -1,4 +1,4 @@
-let formula1 = "(-(2+3)) = (5)^2";
+let formula1 = "(x)^0 = y";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -33,6 +33,9 @@ function initialize(formula) {
 
     console.log(leftSide);
     console.log(rightSide);
+
+    // check if quadratic equation is applicable
+    checkQuadratic("x");
 
     //      - getTerm (completed)
     //      - moveTerm
@@ -249,6 +252,39 @@ function expand(array) {
     finalArray = finalArray.concat(backArray);
 
     return finalArray;
+}
+
+function checkQuadratic(variable) {
+    let term = new Array(0);
+    let count;
+
+    for(let i = 0 ; i < leftSide.length; i += term.length) {
+        term = getTerm(i, leftSide);
+        count = 0;
+        for(let n = 0; n < term.length; n++) {
+            if(term[n] == variable) {
+                count++;
+            }
+        }
+        if(count == 2) {
+            console.log("quadratic");
+            //quadratic();
+        }
+    }
+
+    for(let i = 0 ; i < rightSide.length; i += term.length) {
+        term = getTerm(i, rightSide);
+        count = 0;
+        for(let n = 0; n < term.length; n++) {
+            if(term[n] == variable) {
+                count++;
+            }
+        }
+        if(count == 2) {
+            console.log("quadratic");
+            //quadratic();
+        }
+    }
 }
 
 function removeDenominator() {
