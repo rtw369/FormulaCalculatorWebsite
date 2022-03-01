@@ -1,4 +1,4 @@
-let formula1 = "(((5)-(6))+(5)(6)) = (4+3)^2(4)";
+let formula1 = "(1+2)/(3+4) = (5)^2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -7,7 +7,7 @@ let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
 
-initialize(formula1);
+initialize(formula2);
 
 function initialize(formula) {
     divideFormula(removeSpaces(formula));
@@ -17,38 +17,29 @@ function initialize(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
-/*
+
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
 
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
-*/
-
-    //rightSide = expandPower(rightSide);
-    //console.log("rightSide \n");
-    //console.log(rightSide);
 
     while(leftSide.includes("(")) {
         leftSide = expand(leftSide);
     }
-    /*
     while(rightSide.includes("(")) {
         rightSide = expand(rightSide);
     }
-    */
 
     console.log(leftSide);
-    //console.log(rightSide);
-
-    //console.log(getFrontExpression(5,"(5)*(4)"))
+    console.log(rightSide);
 
     //      - getTerm (completed)
     //      - moveTerm
     //      - getDenominator (completed)
     //      - removeDenominator (completed)
-    //      - expand - do the inner brackets first
+    //      - expand - do the inner brackets first (completed)
 }
 
 function expandPower(array) {
@@ -471,11 +462,6 @@ function getFrontExpression(end, array) {
             start = i + 1;
             i = -1;
         }
-        /*
-        else if(brackets == 1 && array[i] == "(") {
-            start = i;
-            i = -1;
-        }*/
 
         if(array[i] == "(") brackets--;
     }
