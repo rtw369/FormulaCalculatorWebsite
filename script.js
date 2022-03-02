@@ -1,4 +1,4 @@
-let formula1 = "(x)^0 = y";
+let formula1 = "x(x+2) = -2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -6,6 +6,7 @@ let leftSide = "";
 let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
+let variable = "x";
 
 initialize(formula1);
 
@@ -35,7 +36,7 @@ function initialize(formula) {
     console.log(rightSide);
 
     // check if quadratic equation is applicable
-    checkQuadratic("x");
+    checkQuadratic();
 
     //      - getTerm (completed)
     //      - moveTerm
@@ -254,9 +255,10 @@ function expand(array) {
     return finalArray;
 }
 
-function checkQuadratic(variable) {
+function checkQuadratic() {
     let term = new Array(0);
     let count;
+    let quadratic = false;
 
     for(let i = 0 ; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
@@ -267,8 +269,7 @@ function checkQuadratic(variable) {
             }
         }
         if(count == 2) {
-            console.log("quadratic");
-            //quadratic();
+            quadratic = true;
         }
     }
 
@@ -281,10 +282,83 @@ function checkQuadratic(variable) {
             }
         }
         if(count == 2) {
-            console.log("quadratic");
-            //quadratic();
+            quadratic = true;
         }
     }
+
+    if(quadratic) {
+        console.log("quadratic");
+        solveQuadratic();
+    }
+    else {
+        console.log("moveTerm");
+        moveTerm();
+    }
+}
+
+function solveQuadratic() {
+    let a = new Array(0);
+    let b = new Array(0);
+    let c = new Array(0);
+    let term = new Array(0);
+    let count = 0;
+    let tempTerm = new Array(0);
+
+    for(let i = 0; i < leftSide.length; i+=term.length) {
+        term = getTerm(i, leftSide);
+        tempTerm = new Array(0);
+        count = 0;
+        for(let n = 0; n < term.length; n++) {
+            if(term[n] == variable) {
+                count++;
+                tempTerm.push("1");
+            }
+            else tempTerm.push(term[n]);   
+        }
+        if(count == 2) {
+            a.push("+");
+            a = a.concat(tempTerm);
+        }
+        else if(count == 1) {
+            b.push("+");
+            b = b.concat(tempTerm);
+        }
+        else if(count == 0) {
+            c.push("+");
+            c = c.concat(tempTerm);
+        }
+        else;
+    }
+
+    for(let i = 0; i < rightSide.length; i+=term.length) {
+        term = getTerm(i, rightSide);
+        tempTerm = new Array(0);
+        count = 0;
+        for(let n = 0; n < term.length; n++) {
+            if(term[n] == variable) {
+                count++;
+                tempTerm.push("1");
+            }
+            else tempTerm.push(term[n]);
+        }
+        if(count == 2) {
+            a.push("-");
+            a = a.concat(tempTerm);
+        }
+        else if(count == 1) {
+            b.push("-");
+            b = b.concat(tempTerm);
+        }
+        else if(count == 0) {
+            c.push("-");
+            c = c.concat(tempTerm);
+        }
+        else;
+    }
+
+    console.log(a);
+    console.log(b);
+    console.log(c);
 }
 
 function removeDenominator() {
@@ -458,18 +532,25 @@ function setVariables(array) {
 function getTerm(start, array) {
     let brackets = 0;
     let end = -1;
+    let skip = false;
 
     for(let i = start; i <= array.length; i++) {
         if(i == array.length && end == -1) end = i;
         
         if(array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
+
+        if(array[i] == "*") skip = true;
         
         
         if(i != start && (array[i] == "-" || array[i] == "+") && brackets == 0) {
-            end = i;
-            i = array.length;
+            if(!skip) {
+                end = i;
+                i = array.length;
+            }
         }
+
+        if(array[i] != "*") skip = false;
     }
 
     let term = new Array(end - start);
