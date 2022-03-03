@@ -1,4 +1,4 @@
-let formula1 = "x(x+2) = -2";
+let formula1 = "((3)(4)) = -2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -18,6 +18,7 @@ function initialize(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
+    /*
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
 
@@ -37,12 +38,52 @@ function initialize(formula) {
 
     // check if quadratic equation is applicable
     checkQuadratic();
+    */
+
+    evaluate(leftSide);
 
     //      - getTerm (completed)
     //      - moveTerm
     //      - getDenominator (completed)
     //      - removeDenominator (completed)
     //      - expand - do the inner brackets first (completed)
+}
+
+function evaluate(array) {
+    let brackets = 0;
+    let start = -1;
+    let result = new Array(0);
+
+    console.log(array);
+
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "(") {
+            if(brackets == 0) {
+                start = i;
+            }
+            brackets++;
+        }
+        if(array[i] == ")") {
+            brackets--;
+            if(brackets == 0) {
+                evaluate(array.slice(start + 1, i));
+            }
+        }
+    }
+
+    // no exponents
+    // yes functions though
+
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "/") {
+
+        }
+        else if(array[i] == "*") {
+
+        }
+    }
+
+    return result;
 }
 
 function expandPower(array) {
