@@ -40,7 +40,7 @@ function initialize(formula) {
     checkQuadratic();
     */
 
-    evaluate(leftSide);
+    //evaluate(leftSide);
 
     //      - getTerm (completed)
     //      - moveTerm
@@ -764,3 +764,12 @@ function copyArray(array) {
 
     return result;
 }
+
+//module.exports.initialize = initialize();
+module.exports.getFrontExpression = getFrontExpression();
+module.exports.getBackExpression = getBackExpression();
+module.exports.getTerm = getTerm();
+module.exports.expandPower = expandPower();
+module.exports.removeDenominator = removeDenominator();
+module.exports.expand = expand();
+module.exports.evaluate = evaluate();
