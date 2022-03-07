@@ -807,3 +807,5 @@ function copyArray(array) {
 
     return result;
 }
+
+module.exports = execute;
