@@ -110,13 +110,18 @@ function evaluate(array) {
 }
 
 function getValue(string) {
-    let result = NaN;
+    let result;
 
     if(isVariable(string)) {
-        console.log("Error");
+        for(let i = 0; i < variables.length; i++) {
+            if(string == variables[i]) {
+                result = values[i];
+            }
+            else result = NaN;
+        }
     }
     else if(isOperator(string)) {
-        console.log("Error");
+        result = NaN;
     }
     else {
         result = parseFloat(string);
