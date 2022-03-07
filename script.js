@@ -8,15 +8,17 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-initialize(formula1);
+execute(formula1);
 
-function initialize(formula) {
+function execute(formula) {
     divideFormula(removeSpaces(formula));
     leftSide = createArray(leftSide);
     rightSide = createArray(rightSide);
 
     setVariables(leftSide);
     setVariables(rightSide);
+
+    //console.log(getValue("3"));
 
     /*
     leftSide = expandPower(leftSide);  
@@ -83,6 +85,21 @@ function evaluate(array) {
         }
     }
 
+    return result;
+}
+
+function getValue(string) {
+    let result = NaN;
+
+    if(isVariable(string)) {
+        console.log("Error");
+    }
+    else if(isOperator(string)) {
+        console.log("Error");
+    }
+    else {
+        result = parseFloat(string);
+    }
     return result;
 }
 
@@ -764,12 +781,3 @@ function copyArray(array) {
 
     return result;
 }
-
-//module.exports.initialize = initialize();
-module.exports.getFrontExpression = getFrontExpression();
-module.exports.getBackExpression = getBackExpression();
-module.exports.getTerm = getTerm();
-module.exports.expandPower = expandPower();
-module.exports.removeDenominator = removeDenominator();
-module.exports.expand = expand();
-module.exports.evaluate = evaluate();
