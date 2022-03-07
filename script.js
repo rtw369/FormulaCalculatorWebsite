@@ -1,4 +1,4 @@
-let formula1 = "((3)(4)) = -2";
+let formula1 = "(2*8/4) = -2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -18,7 +18,7 @@ function execute(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
-    //console.log(getValue("3"));
+    //console.log(getValue("-3.3"));
 
     /*
     leftSide = expandPower(leftSide);  
@@ -42,7 +42,7 @@ function execute(formula) {
     checkQuadratic();
     */
 
-    //evaluate(leftSide);
+    console.log(evaluate(leftSide));
 
     //      - getTerm (completed)
     //      - moveTerm
@@ -54,9 +54,13 @@ function execute(formula) {
 function evaluate(array) {
     let brackets = 0;
     let start = -1;
+    let value;
     let result = new Array(0);
 
     console.log(array);
+
+    let frontArray = new Array(0);
+    let backArray = new Array(0);
 
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "(") {
@@ -68,7 +72,10 @@ function evaluate(array) {
         if(array[i] == ")") {
             brackets--;
             if(brackets == 0) {
-                evaluate(array.slice(start + 1, i));
+                frontArray = array.slice(0, start);
+                backArray = array.slice(i - start + 1);
+                value = evaluate(array.slice(start + 1, i));
+                array = frontArray.concat(value.concat(backArray));
             }
         }
     }
@@ -78,13 +85,16 @@ function evaluate(array) {
 
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "/") {
-
+            value = getValue(array[i-1]) / getValue(array[i+1]);
+            array.splice(i - 1, 3, value);
         }
         else if(array[i] == "*") {
-
+            value = getValue(array[i-1]) * getValue(array[i+1]);
+            array.splice(i - 1, 3, value);
         }
     }
 
+    result = copyArray(array);
     return result;
 }
 
