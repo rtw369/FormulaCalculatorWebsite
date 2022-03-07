@@ -1,4 +1,4 @@
-let formula1 = "(2*8/4) = -2";
+let formula1 = "(4-2*3) = -2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -90,6 +90,17 @@ function evaluate(array) {
         }
         else if(array[i] == "*") {
             value = getValue(array[i-1]) * getValue(array[i+1]);
+            array.splice(i - 1, 3, value);
+        }
+    }
+
+    for(let i = 0; i < array.length; i++) {
+        if(array[i] == "-") {
+            value = getValue(array[i-1]) - getValue(array[i+1]);
+            array.splice(i - 1, 3, value);
+        }
+        else if(array[i] == "+") {
+            value = getValue(array[i-1]) + getValue(array[i+1]);
             array.splice(i - 1, 3, value);
         }
     }
