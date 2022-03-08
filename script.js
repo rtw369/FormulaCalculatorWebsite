@@ -1,4 +1,4 @@
-let formula1 = "(4-2*3) = -2";
+let formula1 = "(4-2*3)*(-2) = -2";
 let formula2 = "(3)/(4)(5) = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
@@ -57,8 +57,6 @@ function evaluate(array) {
     let value;
     let result = new Array(0);
 
-    console.log(array);
-
     let frontArray = new Array(0);
     let backArray = new Array(0);
 
@@ -73,9 +71,10 @@ function evaluate(array) {
             brackets--;
             if(brackets == 0) {
                 frontArray = array.slice(0, start);
-                backArray = array.slice(i - start + 1);
+                backArray = array.slice(i + 1);
                 value = evaluate(array.slice(start + 1, i));
                 array = frontArray.concat(value.concat(backArray));
+                i = 0;
             }
         }
     }
@@ -87,21 +86,27 @@ function evaluate(array) {
         if(array[i] == "/") {
             value = getValue(array[i-1]) / getValue(array[i+1]);
             array.splice(i - 1, 3, value);
+            i = 0;
         }
         else if(array[i] == "*") {
             value = getValue(array[i-1]) * getValue(array[i+1]);
             array.splice(i - 1, 3, value);
+            i = 0;
         }
     }
 
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "-") {
             value = getValue(array[i-1]) - getValue(array[i+1]);
-            array.splice(i - 1, 3, value);
+            if(array[i - 1] == undefined) array.splice(i, 2, value);
+            else array.splice(i - 1, 3, value);
+            i = 0;
         }
         else if(array[i] == "+") {
             value = getValue(array[i-1]) + getValue(array[i+1]);
-            array.splice(i - 1, 3, value);
+            if(array[i - 1] == undefined) array.splice(i, 2, value);
+            else array.splice(i - 1, 3, value);
+            i = 0;
         }
     }
 
@@ -121,11 +126,13 @@ function getValue(string) {
         }
     }
     else if(isOperator(string)) {
-        result = NaN;
+        result = 0;
     }
+    else if(string == undefined) result = 0;
     else {
         result = parseFloat(string);
     }
+
     return result;
 }
 
@@ -807,5 +814,3 @@ function copyArray(array) {
 
     return result;
 }
-
-module.exports = execute;
