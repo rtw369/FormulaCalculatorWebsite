@@ -97,15 +97,25 @@ function evaluate(array) {
 
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "-") {
-            value = getValue(array[i-1]) - getValue(array[i+1]);
-            if(array[i - 1] == undefined) array.splice(i, 2, value);
-            else array.splice(i - 1, 3, value);
+            if(array[i - 1] == undefined) {
+                value = 0 - getValue(array[i + 1]);
+                array.splice(i, 2, value);
+            }
+            else {
+                value = getValue(array[i-1]) - getValue(array[i+1]);
+                array.splice(i - 1, 3, value);
+            }
             i = 0;
         }
         else if(array[i] == "+") {
-            value = getValue(array[i-1]) + getValue(array[i+1]);
-            if(array[i - 1] == undefined) array.splice(i, 2, value);
-            else array.splice(i - 1, 3, value);
+            if(array[i - 1] == undefined) {
+                value = 0 + getValue(array[i + 1]);
+                array.splice(i, 2, value);
+            }
+            else {
+                value = getValue(array[i-1]) - getValue(array[i+1]);
+                array.splice(i - 1, 3, value);
+            }
             i = 0;
         }
     }
@@ -126,9 +136,8 @@ function getValue(string) {
         }
     }
     else if(isOperator(string)) {
-        result = 0;
+        result = NaN;
     }
-    else if(string == undefined) result = 0;
     else {
         result = parseFloat(string);
     }
