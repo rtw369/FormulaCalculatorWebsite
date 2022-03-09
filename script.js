@@ -1,5 +1,5 @@
-let formula1 = "x^2 + 2*x + 1 = 0";
-let formula2 = "++3 = (9)^3";
+let formula1 = "2*x^2 + 2*x - 1 = 0";
+let formula2 = "2*6^0+5*3 = 0";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -33,11 +33,11 @@ function execute(formula) {
         rightSide = expand(rightSide);
     }
 
-    console.log(leftSide);
+    console.log(leftSide);  
     console.log(rightSide);
 
     // check if quadratic equation is applicable
-    checkQuadratic();
+    console.log(checkQuadratic());
     
 
     //console.log(evaluate(leftSide));
@@ -165,8 +165,8 @@ function expandPower(array) {
         backExpression = getBackExpression(powerIndex + 1, finalArray);
 
         if(parseInt(backExpression[0]) == 0) {
-            frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
-            backArray = finalArray.splice(powerIndex + backExpression.length + 1);
+            frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
+            backArray = finalArray.slice(powerIndex + backExpression.length + 1);
             frontArray.push("(");
             frontArray.push("1");
             frontArray.push(")");
@@ -174,8 +174,8 @@ function expandPower(array) {
             powerIndex = finalArray.indexOf("^");
         }
         else {
-            frontArray = finalArray.splice(0, powerIndex - frontExpression.length);
-            backArray = finalArray.splice(powerIndex + backExpression.length + 1);
+            frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
+            backArray = finalArray.slice(powerIndex + backExpression.length + 1);
             frontArray.push("(");
             frontArray = frontArray.concat(frontExpression);
 
