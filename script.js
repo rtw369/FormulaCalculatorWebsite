@@ -1,5 +1,5 @@
-let formula1 = "(4-2*3)*(-2) = -2";
-let formula2 = "(3)/(4)(5) = (9)^3";
+let formula1 = "x^2 + 2*x + 1 = 0";
+let formula2 = "++3 = (9)^3";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -18,9 +18,7 @@ function execute(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
-    //console.log(getValue("-3.3"));
 
-    /*
     leftSide = expandPower(leftSide);  
     rightSide = expandPower(rightSide);
 
@@ -40,15 +38,9 @@ function execute(formula) {
 
     // check if quadratic equation is applicable
     checkQuadratic();
-    */
+    
 
-    console.log(evaluate(leftSide));
-
-    //      - getTerm (completed)
-    //      - moveTerm
-    //      - getDenominator (completed)
-    //      - removeDenominator (completed)
-    //      - expand - do the inner brackets first (completed)
+    //console.log(evaluate(leftSide));
 }
 
 function evaluate(array) {
@@ -73,7 +65,9 @@ function evaluate(array) {
                 frontArray = array.slice(0, start);
                 backArray = array.slice(i + 1);
                 value = evaluate(array.slice(start + 1, i));
-                array = frontArray.concat(value.concat(backArray));
+                frontArray.push(value);
+                array = frontArray.concat(backArray);
+                //array = frontArray.concat(value.concat(backArray));
                 i = 0;
             }
         }
@@ -98,8 +92,14 @@ function evaluate(array) {
     for(let i = 0; i < array.length; i++) {
         if(array[i] == "-") {
             if(array[i - 1] == undefined) {
-                value = 0 - getValue(array[i + 1]);
-                array.splice(i, 2, value);
+                if(isOperator(array[i + 1])) {
+                    value = 0;
+                    array.splice(i, 1, value);
+                }
+                else {
+                    value = 0 - getValue(array[i + 1]);
+                    array.splice(i, 2, value);
+                }
             }
             else {
                 value = getValue(array[i-1]) - getValue(array[i+1]);
@@ -109,18 +109,25 @@ function evaluate(array) {
         }
         else if(array[i] == "+") {
             if(array[i - 1] == undefined) {
-                value = 0 + getValue(array[i + 1]);
-                array.splice(i, 2, value);
+                if(isOperator(array[i + 1])) {
+                    value = 0;
+                    array.splice(i, 1, value);
+                }
+                else {
+                    value = 0 + getValue(array[i + 1]);
+                    array.splice(i, 2, value);
+                }
             }
             else {
-                value = getValue(array[i-1]) - getValue(array[i+1]);
+                value = getValue(array[i-1]) + getValue(array[i+1]);
                 array.splice(i - 1, 3, value);
             }
             i = 0;
         }
     }
 
-    result = copyArray(array);
+    //result = copyArray(array);
+    result = array[0];
     return result;
 }
 
@@ -387,12 +394,10 @@ function checkQuadratic() {
     }
 
     if(quadratic) {
-        console.log("quadratic");
-        solveQuadratic();
+        return solveQuadratic();
     }
     else {
-        console.log("moveTerm");
-        moveTerm();
+        return moveTerm();
     }
 }
 
@@ -456,9 +461,21 @@ function solveQuadratic() {
         else;
     }
 
-    console.log(a);
-    console.log(b);
-    console.log(c);
+    a = evaluate(a);
+    b = evaluate(b);
+    c = evaluate(c);
+
+    if(a == 0 || a == NaN) {
+        console.log("moveTerm");
+        return moveTerm();
+    }
+    else {
+        let firstResult = (- b + Math.sqrt(b**2 - 4*a*c)) / 2*a;
+        let secondResult = (- b - Math.sqrt(b**2 - 4*a*c)) / 2*a;
+
+        let result = firstResult+"\nor\n"+secondResult;
+        return result;
+    }
 }
 
 function removeDenominator() {
