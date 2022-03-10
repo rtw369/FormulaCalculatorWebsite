@@ -1,5 +1,5 @@
-let formula1 = "2*x^(1+1) + 2*x - 1 = 0";
-let formula2 = "2^(-2) = 1";
+let formula1 = "(2*(x+4))/x = 6";
+let formula2 = "2*+2*4 =1";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -19,7 +19,7 @@ function execute(formula) {
     setVariables(rightSide);
 
 
-    leftSide = expandPower(leftSide);  
+    leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
 
     while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
@@ -33,8 +33,8 @@ function execute(formula) {
         rightSide = expand(rightSide);
     }
 
-    console.log(leftSide);  
-    console.log(rightSide);
+    //console.log(leftSide);
+    //console.log(rightSide);
 
     // check if quadratic equation is applicable
     console.log(checkQuadratic());
@@ -83,6 +83,10 @@ function evaluate(array) {
             i = 0;
         }
         else if(array[i] == "*") {
+            if(isOperator(array[i+1])) {
+                value = evaluate(array.slice(i + 1, i + 3));
+                array.splice(i+1, 2, value);
+            }
             value = getValue(array[i-1]) * getValue(array[i+1]);
             array.splice(i - 1, 3, value);
             i = 0;
@@ -150,6 +154,71 @@ function getValue(string) {
     }
 
     return result;
+}
+
+function moveTerm() {
+    let leftExpression = new Array(0);
+    let rightExpression = new Array(0);
+    let tempTerm = new Array(0);
+    let tempExpression = new Array(0);
+
+    for(let i = 0; i < leftSide.length; i += tempTerm.length) {
+        tempTerm = getTerm(i, leftSide);
+        if(tempTerm.includes(variable)) {
+            leftExpression.push("+");
+            leftExpression.push("(");
+            leftExpression = leftExpression.concat(tempTerm);
+            leftExpression.push(")");
+        }
+        else {
+            rightExpression.push("-");
+            rightExpression.push("(");
+            rightExpression = rightExpression.concat(tempTerm);
+            rightExpression.push(")");
+        }
+    }
+
+    for(let i = 0; i < rightSide.length; i += tempTerm.length) {
+        tempTerm = getTerm(i, rightSide);
+        if(tempTerm.includes(variable)) {
+            leftExpression.push("-");
+            leftExpression.push("(");
+            leftExpression = leftExpression.concat(tempTerm);
+            leftExpression.push(")");
+        }
+        else {
+            rightExpression.push("+");
+            rightExpression.push("(");
+            rightExpression = rightExpression.concat(tempTerm);
+            rightExpression.push(")");
+        }
+    }
+
+    while(leftExpression.includes("(")) {
+        leftExpression = expand(leftExpression);
+    }
+    while(rightExpression.includes("(")) {
+        rightExpression = expand(rightExpression);
+    }
+
+    if(leftExpression.length != 0) {
+        tempExpression.push("(");
+        for(let i = 0; i < leftExpression.length; i++) {
+            if(leftExpression[i] == variable) {
+                tempExpression.push("1");
+            }
+            else tempExpression.push(leftExpression[i]);
+        }
+    
+        tempExpression.push(")");
+
+        rightExpression.unshift("(");
+        rightExpression.push(")");
+        rightExpression.push("/");
+        rightExpression = rightExpression.concat(tempExpression);
+    }
+
+    return evaluate(rightExpression);
 }
 
 function expandPower(array) {
@@ -261,6 +330,7 @@ function expand(array) {
         length = 0;
         firstExpression = getBackExpression(0, expression);
         switch(expression[firstExpression.length]) {
+            
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
                 secondExpression = expand(secondExpression);
@@ -293,20 +363,21 @@ function expand(array) {
                 break;
 
             case "-":
-                secondExpression = expression.splice(firstExpression.length + 1);
-                secondExpression = expand(secondExpression);
+                secondExpression = getBackExpression(firstExpression.length + 1, expression);
 
                 length = firstExpression.length + 1 + secondExpression.length;
-                tempExpression.push("(");
                 
-                if(firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1,firstExpression.length - 1);
+                if(firstExpression.length > 0 && firstExpression[0] != "(") {
+                    firstExpression.unshift("(");
+                    firstExpression.push(")");
                 }
                 if(secondExpression[0] == "(") {
                     secondExpression = secondExpression.slice(1,secondExpression.length - 1);
                 }
 
                 tempExpression = tempExpression.concat(firstExpression);
+                tempExpression.push("+");
+                tempExpression.push("(");
 
                 for(let i = 0; i < secondExpression.length; i += secondTerm.length) {
                     secondTerm = getTerm(i, secondExpression);
@@ -316,7 +387,6 @@ function expand(array) {
 
                     tempExpression = tempExpression.concat(secondTerm);
                 }
-
                 tempExpression.push(")");
                 break;
 
@@ -477,7 +547,6 @@ function solveQuadratic() {
     c = evaluate(c);
 
     if(a == 0 || a == NaN) {
-        console.log("moveTerm");
         return moveTerm();
     }
     else {
