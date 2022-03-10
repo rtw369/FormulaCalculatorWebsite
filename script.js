@@ -1,6 +1,6 @@
 let formula1 = "(2*(x+4))/x = 6";
-let formula2 = "2*+2*4 =1";
-let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
+let formula2 = "(x+1)(x+1) = 0";
+let formula3 = "2*+2*4 = 1";
 
 let leftSide = "";
 let rightSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-execute(formula2);
+execute(formula3);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -83,10 +83,6 @@ function evaluate(array) {
             i = 0;
         }
         else if(array[i] == "*") {
-            if(isOperator(array[i+1])) {
-                value = evaluate(array.slice(i + 1, i + 3));
-                array.splice(i+1, 2, value);
-            }
             value = getValue(array[i-1]) * getValue(array[i+1]);
             array.splice(i - 1, 3, value);
             i = 0;
@@ -440,6 +436,15 @@ function expand(array) {
     finalArray = finalArray.concat(expression);
     finalArray = finalArray.concat(backArray);
 
+    for(let i = 0; i < finalArray.length - 1; i++) {
+        if(isOperator(finalArray[i])) {
+            if(finalArray[i+1] == "+") {
+                finalArray.splice(i+1, 1);
+                i = 0;
+            }
+        }
+    }
+
     return finalArray;
 }
 
@@ -541,6 +546,10 @@ function solveQuadratic() {
         }
         else;
     }
+
+    a = expand(a);
+    b = expand(b);
+    c = expand(c);
 
     a = evaluate(a);
     b = evaluate(b);
