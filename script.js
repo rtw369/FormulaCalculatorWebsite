@@ -1,5 +1,5 @@
-let formula1 = "2*x^2 + 2*x - 1 = 0";
-let formula2 = "2*6^0+5*3 = 0";
+let formula1 = "2*x^(1+1) + 2*x - 1 = 0";
+let formula2 = "2^(-2) = 1";
 let formula3 = "a+ b-c*d / e = (sinf+cosg)*Pi";
 
 let leftSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-execute(formula1);
+execute(formula2);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -163,23 +163,34 @@ function expandPower(array) {
     while(powerIndex != -1) {
         frontExpression = getFrontExpression(powerIndex - 1, finalArray);
         backExpression = getBackExpression(powerIndex + 1, finalArray);
+        let power = evaluate(backExpression);
+        frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
+        backArray = finalArray.slice(powerIndex + backExpression.length + 1);
 
-        if(parseInt(backExpression[0]) == 0) {
-            frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
-            backArray = finalArray.slice(powerIndex + backExpression.length + 1);
+        if(power == 0) {
             frontArray.push("(");
             frontArray.push("1");
             frontArray.push(")");
             finalArray = frontArray.concat(backArray);
             powerIndex = finalArray.indexOf("^");
         }
+        else if(power < 0) {
+            frontArray.push("(");
+            frontArray.push("1");
+            frontArray.push("/");
+            frontArray = frontArray.concat(frontExpression);
+            frontArray.push("^");
+            frontArray.push(Math.abs(power));
+            frontArray.push(")");
+
+            finalArray = frontArray.concat(backArray);
+            powerIndex = finalArray.indexOf("^");
+        }
         else {
-            frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
-            backArray = finalArray.slice(powerIndex + backExpression.length + 1);
             frontArray.push("(");
             frontArray = frontArray.concat(frontExpression);
 
-            for(let i = 1; i < parseInt(backExpression[0]); i++) {
+            for(let i = 1; i < power; i++) {
                 frontArray.push("*");
                 frontArray = frontArray.concat(frontExpression);
             }
