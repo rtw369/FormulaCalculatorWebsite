@@ -1,5 +1,5 @@
-let formula1 = "(2*(x+4))/x = 6";
-let formula2 = "(x+1)(x+1) = 0";
+let formula1 = "(2*(x-4))/x = 6";
+let formula2 = "(x+1)(x-1) = 0";
 let formula3 = "2*+2*4 = 1";
 
 let leftSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-execute(formula3);
+execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -83,6 +83,11 @@ function evaluate(array) {
             i = 0;
         }
         else if(array[i] == "*") {
+            if(array[i+1] == "-") {
+                value = getValue(array[i-1]) * -1;
+                array.splice(i-1, 1, value);
+                array.splice(i+1, 1);
+            }
             value = getValue(array[i-1]) * getValue(array[i+1]);
             array.splice(i - 1, 3, value);
             i = 0;
