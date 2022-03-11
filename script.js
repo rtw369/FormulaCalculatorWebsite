@@ -1,6 +1,6 @@
 let formula1 = "(2*(x-4))/x = 6";
 let formula2 = "(x+1)(x-1) = 0";
-let formula3 = "2*+2*4 = 1";
+let formula3 = "2+6/3-4 = x";
 
 let leftSide = "";
 let rightSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-execute(formula1);
+//execute(formula3);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -37,7 +37,10 @@ function execute(formula) {
     //console.log(rightSide);
 
     // check if quadratic equation is applicable
-    console.log(checkQuadratic());
+    let result = checkQuadratic();
+    if(Math.abs(result) == 0) result = Math.abs(result);
+    console.log(result);
+    return result;
     
 
     //console.log(evaluate(leftSide));
@@ -934,3 +937,5 @@ function copyArray(array) {
 
     return result;
 }
+
+module.exports.execute = execute;
