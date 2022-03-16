@@ -1,6 +1,6 @@
 let formula1 = "(2*(x-4))/x = 6";
 let formula2 = "5++5 = x";
-let formula3 = "((3+2)(3)(7)) = x";
+let formula3 = "((1+2)+(5+6)-(7-8)) = x";
 
 let leftSide = "";
 let rightSide = "";
@@ -199,6 +199,9 @@ function moveTerm() {
         }
     }
 
+    leftExpression = cleanUp(leftExpression);
+    rightExpression = cleanUp(rightExpression);
+
     while(leftExpression.includes("(")) {
         leftExpression = expand(leftExpression);
     }
@@ -222,6 +225,8 @@ function moveTerm() {
         rightExpression.push("/");
         rightExpression = rightExpression.concat(tempExpression);
     }
+
+    console.log(rightExpression);
 
     return evaluate(rightExpression);
 }
@@ -334,9 +339,7 @@ function expand(array) {
         tempExpression = new Array(0);
         length = 0;
         firstExpression = getBackExpression(0, expression);
-        //firstExpression = cleanUp(firstExpression);
         switch(expression[firstExpression.length]) {
-            
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
                 secondExpression = expand(secondExpression);
@@ -395,6 +398,8 @@ function expand(array) {
                 break;
 
             case "*":
+                console.log("multiply");
+                console.log(expression);
                 tempExpression.push("(");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
@@ -422,6 +427,7 @@ function expand(array) {
                 break;
 
             case "(":
+                console.log("bracket");
                 secondExpression = expression.slice(firstExpression.length);
                 firstExpression.push("*");
                 expression = firstExpression.concat(secondExpression);
@@ -454,9 +460,11 @@ function expand(array) {
 function cleanUp(array) {
     for(let i = 1; i < array.length - 1; i++) {
         if(array[i] == "+") {
-            if(isOperator(array[i-1]) || isOperator(array[i+1])) {
-                array.splice(i,1);
-                i = 0;
+            if(array[i-1] != ")" || array[i+1] != "(") {
+                if(isOperator(array[i-1]) || isOperator(array[i+1])) {
+                    array.splice(i,1);
+                    i = 0;
+                }
             }
         }
     }
