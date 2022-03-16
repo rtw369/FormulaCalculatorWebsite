@@ -3,9 +3,11 @@ const script = require('./script');
 test('test formulae', () => {
     let formula1 = "2+6/3-4 = x";
     let formula2 = "((1+2)((3-4)(5+6))(7-8)) = x";
+    let formula3 = "((1+2)+((3-4)(5+6))-(7-8)) = x";
 
     expect(script.execute(formula1)).toBe(0);
     expect(script.execute(formula2)).toBe(33);
+    expect(script.execute(formula3)).toBe(-7);
 });
 
 test('test quadratic functions', () => {
