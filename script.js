@@ -1,6 +1,6 @@
 let formula1 = "(2*(x-4))/x = 6";
 let formula2 = "5++5 = x";
-let formula3 = "((1+2)+(5+6)-(7-8)) = x";
+let formula3 = "-100 = 10*x + (1/2)*(-9.8)*x^2";
 
 let leftSide = "";
 let rightSide = "";
@@ -226,8 +226,6 @@ function moveTerm() {
         rightExpression = rightExpression.concat(tempExpression);
     }
 
-    console.log(rightExpression);
-
     return evaluate(rightExpression);
 }
 
@@ -398,8 +396,6 @@ function expand(array) {
                 break;
 
             case "*":
-                console.log("multiply");
-                console.log(expression);
                 tempExpression.push("(");
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
@@ -427,7 +423,6 @@ function expand(array) {
                 break;
 
             case "(":
-                console.log("bracket");
                 secondExpression = expression.slice(firstExpression.length);
                 firstExpression.push("*");
                 expression = firstExpression.concat(secondExpression);
@@ -460,7 +455,7 @@ function expand(array) {
 function cleanUp(array) {
     for(let i = 1; i < array.length - 1; i++) {
         if(array[i] == "+") {
-            if(array[i-1] != ")" || array[i+1] != "(") {
+            if(array[i-1] != ")" && array[i+1] != "(") {
                 if(isOperator(array[i-1]) || isOperator(array[i+1])) {
                     array.splice(i,1);
                     i = 0;
@@ -582,8 +577,8 @@ function solveQuadratic() {
         return moveTerm();
     }
     else {
-        let firstResult = (- b + Math.sqrt(b**2 - 4*a*c)) / 2*a;
-        let secondResult = (- b - Math.sqrt(b**2 - 4*a*c)) / 2*a;
+        let firstResult = (- b + Math.sqrt(Math.pow(b,2) - 4*a*c)) / 2*a;
+        let secondResult = (- b - Math.sqrt(Math.pow(b,2) - 4*a*c)) / 2*a;
 
         let result = firstResult+"\nor\n"+secondResult;
         return result;
