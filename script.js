@@ -1,6 +1,6 @@
 let formula1 = "(2*(x-4))/x = 6";
-let formula2 = "5++5 = x";
-let formula3 = "-100 = 10*x + (1/2)*(-9.8)*x^2";
+let formula2 = "(2+2)/(3) = 6";
+let formula3 = "(4-(x/3)) = 2";
 
 let leftSide = "";
 let rightSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-//execute(formula3);
+execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -24,27 +24,22 @@ function execute(formula) {
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
 
-    while(leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
+    leftSide = expand(leftSide);
+    rightSide = expand(rightSide);
+
+    while (leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
 
-    while(leftSide.includes("(")) {
-        leftSide = expand(leftSide);
-    }
-    while(rightSide.includes("(")) {
-        rightSide = expand(rightSide);
-    }
-
-    //console.log(leftSide);
-    //console.log(rightSide);
+    console.log(leftSide);
+    console.log(rightSide);
 
     // check if quadratic equation is applicable
     let result = checkQuadratic();
-    if(Math.abs(result) == 0) result = Math.abs(result);
+    if (Math.abs(result) == 0) result = Math.abs(result);
     console.log(result);
     return result;
 
-    //console.log(evaluate(leftSide));
 }
 
 function evaluate(array) {
@@ -56,22 +51,21 @@ function evaluate(array) {
     let frontArray = new Array(0);
     let backArray = new Array(0);
 
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "(") {
-            if(brackets == 0) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "(") {
+            if (brackets == 0) {
                 start = i;
             }
             brackets++;
         }
-        if(array[i] == ")") {
+        if (array[i] == ")") {
             brackets--;
-            if(brackets == 0) {
+            if (brackets == 0) {
                 frontArray = array.slice(0, start);
                 backArray = array.slice(i + 1);
                 value = evaluate(array.slice(start + 1, i));
                 frontArray.push(value);
                 array = frontArray.concat(backArray);
-                //array = frontArray.concat(value.concat(backArray));
                 i = 0;
             }
         }
@@ -80,28 +74,28 @@ function evaluate(array) {
     // no exponents
     // yes functions though
 
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "/") {
-            value = getValue(array[i-1]) / getValue(array[i+1]);
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "/") {
+            value = getValue(array[i - 1]) / getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
             i = 0;
         }
-        else if(array[i] == "*") {
-            if(array[i+1] == "-") {
-                value = getValue(array[i-1]) * -1;
-                array.splice(i-1, 1, value);
-                array.splice(i+1, 1);
+        else if (array[i] == "*") {
+            if (array[i + 1] == "-") {
+                value = getValue(array[i - 1]) * -1;
+                array.splice(i - 1, 1, value);
+                array.splice(i + 1, 1);
             }
-            value = getValue(array[i-1]) * getValue(array[i+1]);
+            value = getValue(array[i - 1]) * getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
             i = 0;
         }
     }
 
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "-") {
-            if(array[i - 1] == undefined) {
-                if(isOperator(array[i + 1])) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "-") {
+            if (array[i - 1] == undefined) {
+                if (isOperator(array[i + 1])) {
                     value = 0;
                     array.splice(i, 1, value);
                 }
@@ -111,14 +105,14 @@ function evaluate(array) {
                 }
             }
             else {
-                value = getValue(array[i-1]) - getValue(array[i+1]);
+                value = getValue(array[i - 1]) - getValue(array[i + 1]);
                 array.splice(i - 1, 3, value);
             }
             i = 0;
         }
-        else if(array[i] == "+") {
-            if(array[i - 1] == undefined) {
-                if(isOperator(array[i + 1])) {
+        else if (array[i] == "+") {
+            if (array[i - 1] == undefined) {
+                if (isOperator(array[i + 1])) {
                     value = 0;
                     array.splice(i, 1, value);
                 }
@@ -128,14 +122,12 @@ function evaluate(array) {
                 }
             }
             else {
-                value = getValue(array[i-1]) + getValue(array[i+1]);
+                value = getValue(array[i - 1]) + getValue(array[i + 1]);
                 array.splice(i - 1, 3, value);
             }
             i = 0;
         }
     }
-
-    //result = copyArray(array);
     result = array[0];
     return result;
 }
@@ -143,15 +135,15 @@ function evaluate(array) {
 function getValue(string) {
     let result;
 
-    if(isVariable(string)) {
-        for(let i = 0; i < variables.length; i++) {
-            if(string == variables[i]) {
+    if (isVariable(string)) {
+        for (let i = 0; i < variables.length; i++) {
+            if (string == variables[i]) {
                 result = values[i];
             }
             else result = NaN;
         }
     }
-    else if(isOperator(string)) {
+    else if (isOperator(string)) {
         result = NaN;
     }
     else {
@@ -167,9 +159,9 @@ function moveTerm() {
     let tempTerm = new Array(0);
     let tempExpression = new Array(0);
 
-    for(let i = 0; i < leftSide.length; i += tempTerm.length) {
+    for (let i = 0; i < leftSide.length; i += tempTerm.length) {
         tempTerm = getTerm(i, leftSide);
-        if(tempTerm.includes(variable)) {
+        if (tempTerm.includes(variable)) {
             leftExpression.push("+");
             leftExpression.push("(");
             leftExpression = leftExpression.concat(tempTerm);
@@ -183,9 +175,9 @@ function moveTerm() {
         }
     }
 
-    for(let i = 0; i < rightSide.length; i += tempTerm.length) {
+    for (let i = 0; i < rightSide.length; i += tempTerm.length) {
         tempTerm = getTerm(i, rightSide);
-        if(tempTerm.includes(variable)) {
+        if (tempTerm.includes(variable)) {
             leftExpression.push("-");
             leftExpression.push("(");
             leftExpression = leftExpression.concat(tempTerm);
@@ -202,22 +194,24 @@ function moveTerm() {
     leftExpression = cleanUp(leftExpression);
     rightExpression = cleanUp(rightExpression);
 
-    while(leftExpression.includes("(")) {
-        leftExpression = expand(leftExpression);
-    }
-    while(rightExpression.includes("(")) {
-        rightExpression = expand(rightExpression);
-    }
+    console.log(leftExpression);
+    console.log(rightExpression);
+    console.log("after");
 
-    if(leftExpression.length != 0) {
+    leftExpression = expand(leftExpression);
+    console.log(leftExpression);
+    rightExpression = expand(rightExpression);
+    console.log(rightExpression);
+
+    if (leftExpression.length != 0) {
         tempExpression.push("(");
-        for(let i = 0; i < leftExpression.length; i++) {
-            if(leftExpression[i] == variable) {
+        for (let i = 0; i < leftExpression.length; i++) {
+            if (leftExpression[i] == variable) {
                 tempExpression.push("1");
             }
             else tempExpression.push(leftExpression[i]);
         }
-    
+
         tempExpression.push(")");
 
         rightExpression.unshift("(");
@@ -237,21 +231,21 @@ function expandPower(array) {
     let finalArray = copyArray(array);
     let powerIndex = finalArray.indexOf("^");
 
-    while(powerIndex != -1) {
+    while (powerIndex != -1) {
         frontExpression = getFrontExpression(powerIndex - 1, finalArray);
         backExpression = getBackExpression(powerIndex + 1, finalArray);
         let power = evaluate(backExpression);
         frontArray = finalArray.slice(0, powerIndex - frontExpression.length);
         backArray = finalArray.slice(powerIndex + backExpression.length + 1);
 
-        if(power == 0) {
+        if (power == 0) {
             frontArray.push("(");
             frontArray.push("1");
             frontArray.push(")");
             finalArray = frontArray.concat(backArray);
             powerIndex = finalArray.indexOf("^");
         }
-        else if(power < 0) {
+        else if (power < 0) {
             frontArray.push("(");
             frontArray.push("1");
             frontArray.push("/");
@@ -267,7 +261,7 @@ function expandPower(array) {
             frontArray.push("(");
             frontArray = frontArray.concat(frontExpression);
 
-            for(let i = 1; i < power; i++) {
+            for (let i = 1; i < power; i++) {
                 frontArray.push("*");
                 frontArray = frontArray.concat(frontExpression);
             }
@@ -291,35 +285,35 @@ function expand(array) {
     let backArray = new Array(0);
 
     //find secondBracket
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "(") {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "(") {
             bracket++;
-            if(bracket > numOfBrackets) {
+            if (bracket > numOfBrackets) {
                 numOfBrackets = bracket;
                 secondBracket = lastBracketIndex;
             }
-            if(bracket >= numOfBrackets) lastBracketIndex = i;
+            if (bracket >= numOfBrackets) lastBracketIndex = i;
         }
-        if(array[i] == ")") bracket--;
+        if (array[i] == ")") bracket--;
     }
 
     //get the every expressions within the brackets
     bracket = 1;
     let end = -1;
-    for(let i = secondBracket + 1; i <= array.length; i++) {
-        if(i == array.length) end = i + 1;
-        if(array[i] == "(") bracket++;
-        if(array[i] == ")") {
+    for (let i = secondBracket + 1; i <= array.length; i++) {
+        if (i == array.length) end = i + 1;
+        if (array[i] == "(") bracket++;
+        if (array[i] == ")") {
             bracket--;
-            if(bracket == 0) {
+            if (bracket == 0) {
                 end = i + 1;
-                i = array.length +1;
+                i = array.length + 1;
             }
         }
     }
 
     let expression = new Array(0);
-    for(let i = secondBracket + 1 ; i < end - 1; i++) {
+    for (let i = secondBracket + 1; i < end - 1; i++) {
         expression.push(array[i]);
     }
 
@@ -333,32 +327,49 @@ function expand(array) {
     let secondTerm = new Array(0);
     let length = 0;
 
-    while(expression.includes("(")) {
-        tempExpression = new Array(0);
-        length = 0;
-        firstExpression = getBackExpression(0, expression);
-        switch(expression[firstExpression.length]) {
+    tempExpression = new Array(0);
+    length = 0;
+    firstExpression = getBackExpression(0, expression);
+
+    if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
+        secondExpression = getBackExpression(firstExpression.length + 1, expression);
+        length = firstExpression.length + 1 + secondExpression.length;
+        tempExpression.push("(");
+
+        firstExpression = firstExpression.slice(1, firstExpression.length - 1);
+
+        for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
+            firstTerm = getTerm(i, firstExpression);
+            tempExpression = tempExpression.concat(firstTerm);
+            tempExpression.push("/");
+            tempExpression = tempExpression.concat(secondExpression);
+        }
+
+        tempExpression.push(")");
+    }
+    else {
+        switch (expression[firstExpression.length]) {
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
                 secondExpression = expand(secondExpression);
                 tempExpression.push("(");
                 length = firstExpression.length + 1 + secondExpression.length;
 
-                if(firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1,firstExpression.length - 1);
+                if (firstExpression[0] == "(") {
+                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
                 }
-                if(secondExpression[0] == "(") {
-                    secondExpression = secondExpression.slice(1,secondExpression.length - 1);
+                if (secondExpression[0] == "(") {
+                    secondExpression = secondExpression.slice(1, secondExpression.length - 1);
                 }
 
                 tempExpression = tempExpression.concat(firstExpression);
 
-                if(secondExpression[0] == "+") {
-                    secondExpression.splice(0,1);
+                if (secondExpression[0] == "+") {
+                    secondExpression.splice(0, 1);
                     tempExpression.push("+");
                 }
-                else if(secondExpression[0] == "-") {
-                    secondExpression.splice(0,1);
+                else if (secondExpression[0] == "-") {
+                    secondExpression.splice(0, 1);
                     tempExpression.push("-");
                 }
                 else tempExpression.push("+");
@@ -371,23 +382,23 @@ function expand(array) {
             case "-":
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
-                
-                if(firstExpression.length > 0 && firstExpression[0] != "(") {
+
+                if (firstExpression.length > 0 && firstExpression[0] != "(") {
                     firstExpression.unshift("(");
                     firstExpression.push(")");
                 }
-                if(secondExpression[0] == "(") {
-                    secondExpression = secondExpression.slice(1,secondExpression.length - 1);
+                if (secondExpression[0] == "(") {
+                    secondExpression = secondExpression.slice(1, secondExpression.length - 1);
                 }
 
                 tempExpression = tempExpression.concat(firstExpression);
                 tempExpression.push("+");
                 tempExpression.push("(");
 
-                for(let i = 0; i < secondExpression.length; i += secondTerm.length) {
+                for (let i = 0; i < secondExpression.length; i += secondTerm.length) {
                     secondTerm = getTerm(i, secondExpression);
-                    if(secondTerm[0] == "+") secondTerm[0] = "-";
-                    else if(secondTerm[0] == "-") secondTerm[0] = "+";
+                    if (secondTerm[0] == "+") secondTerm[0] = "-";
+                    else if (secondTerm[0] == "-") secondTerm[0] = "+";
                     else tempExpression.push("-");
 
                     tempExpression = tempExpression.concat(secondTerm);
@@ -402,18 +413,18 @@ function expand(array) {
                 firstExpression = cleanUp(firstExpression);
                 secondExpression = cleanUp(secondExpression);
 
-                if(firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1,firstExpression.length - 1);
+                if (firstExpression[0] == "(") {
+                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
                 }
-                if(secondExpression[0] == "(") {
-                    secondExpression = secondExpression.slice(1,secondExpression.length - 1);
+                if (secondExpression[0] == "(") {
+                    secondExpression = secondExpression.slice(1, secondExpression.length - 1);
                 }
 
-                for(let i = 0; i < firstExpression.length; i += firstTerm.length) {
+                for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
                     firstTerm = getTerm(i, firstExpression);
-                    for(let n = 0; n < secondExpression.length; n += secondTerm.length) {
+                    for (let n = 0; n < secondExpression.length; n += secondTerm.length) {
                         secondTerm = getTerm(n, secondExpression);
-                        if(tempExpression.length != 1) tempExpression.push("+");
+                        if (tempExpression.length != 1) tempExpression.push("+");
                         tempExpression = tempExpression.concat(firstTerm);
                         tempExpression.push("*");
                         tempExpression = tempExpression.concat(secondTerm);
@@ -429,7 +440,7 @@ function expand(array) {
                 break;
 
             case undefined:
-                if(firstExpression[0] == "(") {
+                if (firstExpression[0] == "(") {
                     firstExpression = firstExpression.slice(1, firstExpression.length - 1);
                 }
                 expression = copyArray(firstExpression);
@@ -437,10 +448,9 @@ function expand(array) {
 
             default:
         }
-
-        expression.splice(0, length);
-        expression = tempExpression.concat(expression);
     }
+    expression.splice(0, length);
+    expression = tempExpression.concat(expression);
 
     let finalArray = new Array(0);
     finalArray = finalArray.concat(frontArray);
@@ -449,15 +459,44 @@ function expand(array) {
 
     finalArray = cleanUp(finalArray);
 
+    if (finalArray[0] == "(" && finalArray[finalArray.length - 1] == ")") {
+        finalArray = finalArray.slice(1, finalArray.length - 1);
+    }
+
+    bracket = 0;
+    let isDenom = false;
+
+    for (i = 0; i < finalArray.length; i++) {
+        if (finalArray[i] == "/") {
+            isDenom = true;
+        }
+
+        if (isDenom) {
+            if (finalArray[i] == "(") bracket++;
+            if (finalArray[i] == ")") {
+                bracket--;
+                if (bracket == 0) {
+                    isDenom = false;
+                }
+            }
+        }
+        else {
+            if (finalArray[i] == "(") {
+                i = 0;
+                finalArray = expand(finalArray);
+            }
+        }
+    }
+
     return finalArray;
 }
 
 function cleanUp(array) {
-    for(let i = 1; i < array.length - 1; i++) {
-        if(array[i] == "+") {
-            if(array[i-1] != ")" && array[i+1] != "(") {
-                if(isOperator(array[i-1]) || isOperator(array[i+1])) {
-                    array.splice(i,1);
+    for (let i = 1; i < array.length - 1; i++) {
+        if (array[i] == "+") {
+            if (array[i - 1] != ")" && array[i + 1] != "(") {
+                if (isOperator(array[i - 1]) || isOperator(array[i + 1])) {
+                    array.splice(i, 1);
                     i = 0;
                 }
             }
@@ -467,37 +506,72 @@ function cleanUp(array) {
 }
 
 function checkQuadratic() {
+    //get rid of excess variable
     let term = new Array(0);
+    let tempExpression = new Array(0);
+    let hasVariable = true;
+
+    for(let i = 0; i < leftSide.length; i += term.length) {
+        term = getTerm(i, leftSide);
+        if(!(term.includes(variable))) {
+            hasVariable = false;
+        }
+    }
+    for(let i = 0; i < rightSide.length; i += term.length) {
+        term = getTerm(i, rightSide);
+        if(!(term.includes(variable))) {
+            hasVariable = false;
+        }
+    }
+
+    if(hasVariable) {
+        for(let i = 0; i < leftSide.length; i += term.length) {
+            term = getTerm(i, leftSide);
+            term.splice(term.indexOf(variable), 1, 1);
+            tempExpression = tempExpression.concat(term);
+        }
+        leftSide = copyArray(tempExpression);
+        tempExpression = new Array(0);
+        for(let i = 0; i < rightSide.length; i += term.length) {
+            term = getTerm(i, rightSide);
+            term.splice(term.indexOf(variable), 1, 1);
+            tempExpression = tempExpression.concat(term);
+        }
+        rightSide = copyArray(tempExpression);
+    }
+
+        
+    term = new Array(0);
     let count;
     let quadratic = false;
 
-    for(let i = 0 ; i < leftSide.length; i += term.length) {
+    for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         count = 0;
-        for(let n = 0; n < term.length; n++) {
-            if(term[n] == variable) {
+        for (let n = 0; n < term.length; n++) {
+            if (term[n] == variable) {
                 count++;
             }
         }
-        if(count == 2) {
+        if (count == 2) {
             quadratic = true;
         }
     }
 
-    for(let i = 0 ; i < rightSide.length; i += term.length) {
+    for (let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
         count = 0;
-        for(let n = 0; n < term.length; n++) {
-            if(term[n] == variable) {
+        for (let n = 0; n < term.length; n++) {
+            if (term[n] == variable) {
                 count++;
             }
         }
-        if(count == 2) {
+        if (count == 2) {
             quadratic = true;
         }
     }
 
-    if(quadratic) {
+    if (quadratic) {
         return solveQuadratic();
     }
     else {
@@ -513,52 +587,52 @@ function solveQuadratic() {
     let count = 0;
     let tempTerm = new Array(0);
 
-    for(let i = 0; i < leftSide.length; i+=term.length) {
+    for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         tempTerm = new Array(0);
         count = 0;
-        for(let n = 0; n < term.length; n++) {
-            if(term[n] == variable) {
+        for (let n = 0; n < term.length; n++) {
+            if (term[n] == variable) {
                 count++;
                 tempTerm.push("1");
             }
-            else tempTerm.push(term[n]);   
+            else tempTerm.push(term[n]);
         }
-        if(count == 2) {
+        if (count == 2) {
             a.push("+");
             a = a.concat(tempTerm);
         }
-        else if(count == 1) {
+        else if (count == 1) {
             b.push("+");
             b = b.concat(tempTerm);
         }
-        else if(count == 0) {
+        else if (count == 0) {
             c.push("+");
             c = c.concat(tempTerm);
         }
         else;
     }
 
-    for(let i = 0; i < rightSide.length; i+=term.length) {
+    for (let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
         tempTerm = new Array(0);
         count = 0;
-        for(let n = 0; n < term.length; n++) {
-            if(term[n] == variable) {
+        for (let n = 0; n < term.length; n++) {
+            if (term[n] == variable) {
                 count++;
                 tempTerm.push("1");
             }
             else tempTerm.push(term[n]);
         }
-        if(count == 2) {
+        if (count == 2) {
             a.push("-");
             a = a.concat(tempTerm);
         }
-        else if(count == 1) {
+        else if (count == 1) {
             b.push("-");
             b = b.concat(tempTerm);
         }
-        else if(count == 0) {
+        else if (count == 0) {
             c.push("-");
             c = c.concat(tempTerm);
         }
@@ -573,14 +647,14 @@ function solveQuadratic() {
     b = evaluate(b);
     c = evaluate(c);
 
-    if(a == 0 || a == NaN) {
+    if (a == 0 || a == NaN) {
         return moveTerm();
     }
     else {
-        let firstResult = (- b + Math.sqrt(Math.pow(b,2) - 4*a*c)) / 2*a;
-        let secondResult = (- b - Math.sqrt(Math.pow(b,2) - 4*a*c)) / 2*a;
+        let firstResult = (- b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / 2 * a;
+        let secondResult = (- b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / 2 * a;
 
-        let result = firstResult+"\nor\n"+secondResult;
+        let result = firstResult + "\nor\n" + secondResult;
         return result;
     }
 }
@@ -593,19 +667,19 @@ function removeDenominator() {
     let leftFinal = new Array(0);
     let rightFinal = new Array(0);
 
-    for(let i = 0; i < leftSide.length; i += term.length) {
+    for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         denominator = getDenominator(term);
-        if(denominator != "") {
+        if (denominator != "") {
             remove.push("*");
             remove = remove.concat(denominator);
         }
     }
 
-    for(let i = 0; i < rightSide.length; i += term.length) {
+    for (let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
         denominator = getDenominator(term);
-        if(denominator != "") {
+        if (denominator != "") {
             remove.push("*");
             remove = remove.concat(denominator);
         }
@@ -614,39 +688,39 @@ function removeDenominator() {
     let modifiedTerm = new Array(0);
     let modifiedRemove = new Array(0);
 
-    for(let i = 0; i < leftSide.length; i += term.length) {
+    for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         modifiedTerm = copyArray(term);
         modifiedRemove = copyArray(remove);
         denominator = getDenominator(term);
-        for(let n = remove.length - 1; n >= 0; n -= expression.length) {
+        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
             expression = getFrontExpression(n, remove);
-            if(compareArray(denominator, expression)) {
+            if (compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - expression.length, expression.length + 1);
                 leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
             }
-            else if(n == 0 && !compareArray(denominator, expression)) {
+            else if (n == 0 && !compareArray(denominator, expression)) {
                 leftFinal = leftFinal.concat(term.concat(remove));
             }
         }
     }
 
-    for(let i = 0; i < rightSide.length; i += term.length) {
+    for (let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
         modifiedTerm = copyArray(term);
         modifiedRemove = copyArray(remove);
         denominator = getDenominator(term);
-        for(let n = remove.length - 1; n >= 0; n -= expression.length) {
+        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
             expression = getFrontExpression(n, remove);
-            if(compareArray(denominator, expression)) {
+            if (compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - expression.length, expression.length + 1);
                 rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
                 n = -1;
             }
-            else if(n == 0 && !compareArray(denominator, expression)) {
+            else if (n == 0 && !compareArray(denominator, expression)) {
                 rightFinal = rightFinal.concat(term.concat(remove));
             }
         }
@@ -662,37 +736,36 @@ function removeSpaces(formula) {
 }
 
 function divideFormula(formula) {
-    let indexOfEqual =  formula.indexOf("=");
+    let indexOfEqual = formula.indexOf("=");
     leftSide = formula.substring(0, indexOfEqual);
-    rightSide = formula.substring(indexOfEqual+1);
+    rightSide = formula.substring(indexOfEqual + 1);
 }
 
 function createArray(expression) {
     let modifiedExpression = "";
 
-    for(let i = 0; i < expression.length; i++)
-    {
-        switch(expression.substr(i,3)) {
+    for (let i = 0; i < expression.length; i++) {
+        switch (expression.substr(i, 3)) {
             case "sin":
             case "cos":
             case "tan":
-                modifiedExpression += " "+expression.substr(i,3)+" ";
+                modifiedExpression += " " + expression.substr(i, 3) + " ";
                 i += 3;
-            break;
+                break;
 
             default:
         }
 
-        switch(expression.substr(i,2)) {
+        switch (expression.substr(i, 2)) {
             case "Pi":
-                modifiedExpression += " "+expression.substr(i,2)+" ";
+                modifiedExpression += " " + expression.substr(i, 2) + " ";
                 i += 2;
-            break;
+                break;
 
             default:
         }
 
-        switch(expression.substr(i,1)) {
+        switch (expression.substr(i, 1)) {
             case "+":
             case "-":
             case "*":
@@ -701,21 +774,20 @@ function createArray(expression) {
             case "(":
             case ")":
             case "E":
-                modifiedExpression += " "+expression.substr(i,1)+" ";
-            break;
-            
+                modifiedExpression += " " + expression.substr(i, 1) + " ";
+                break;
+
             default:
-                modifiedExpression += expression.substr(i,1);
+                modifiedExpression += expression.substr(i, 1);
                 break;
         }
     }
 
     let finalArray = modifiedExpression.split(" ");
 
-    for(let i = 0; i < finalArray.length; i++)
-    {
-        if(finalArray[i] === "") {
-            finalArray.splice(i,1);
+    for (let i = 0; i < finalArray.length; i++) {
+        if (finalArray[i] === "") {
+            finalArray.splice(i, 1);
         }
     }
 
@@ -726,28 +798,28 @@ function setVariables(array) {
     let isVariable = false;
     let exceptions = "1234567890+-=/*^()E";
 
-    for(let i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
         isVariable = true;
 
-        for(let n = 0; n < exceptions.length; n++) {
-            if(array[i].charAt(0) == exceptions.charAt(n)) {
+        for (let n = 0; n < exceptions.length; n++) {
+            if (array[i].charAt(0) == exceptions.charAt(n)) {
                 isVariable = false;
             }
         }
-        for(let n = 0; n < variables.length; n++) {
-            if(array[i] == variables[n]) {
+        for (let n = 0; n < variables.length; n++) {
+            if (array[i] == variables[n]) {
                 isVariable = false;
             }
         }
 
-        if(array[i].length == 2 && array[i] == "Pi") isVariable = false;
-        else if(array[i].length == 3) {
-            if(array[i] == "sin") isVariable = false;
-            else if(array[i] == "cos") isVariable = false;
-            else if(array[i] == "tan") isVariable = false;
+        if (array[i].length == 2 && array[i] == "Pi") isVariable = false;
+        else if (array[i].length == 3) {
+            if (array[i] == "sin") isVariable = false;
+            else if (array[i] == "cos") isVariable = false;
+            else if (array[i] == "tan") isVariable = false;
         }
 
-        if(isVariable) {
+        if (isVariable) {
             variables.push(array[i]);
         }
     }
@@ -758,29 +830,29 @@ function getTerm(start, array) {
     let end = -1;
     let skip = false;
 
-    for(let i = start; i <= array.length; i++) {
-        if(i == array.length && end == -1) end = i;
-        
-        if(array[i] == "(") brackets++;
+    for (let i = start; i <= array.length; i++) {
+        if (i == array.length && end == -1) end = i;
+
+        if (array[i] == "(") brackets++;
         else if (array[i] == ")") brackets--;
 
-        if(array[i] == "*") skip = true;
-        
-        
-        if(i != start && (array[i] == "-" || array[i] == "+") && brackets == 0) {
-            if(!skip) {
+        if (array[i] == "*") skip = true;
+
+
+        if (i != start && (array[i] == "-" || array[i] == "+") && brackets == 0) {
+            if (!skip) {
                 end = i;
                 i = array.length;
             }
         }
 
-        if(array[i] != "*") skip = false;
+        if (array[i] != "*") skip = false;
     }
 
     let term = new Array(end - start);
     let termIndex = 0;
 
-    for(let i = start; i < end; i++) {
+    for (let i = start; i < end; i++) {
         term[termIndex] = array[i];
         termIndex++;
     }
@@ -792,24 +864,24 @@ function getFrontExpression(end, array) {
     let brackets = 0;
     let start = -1;
 
-    for(let i = end; i >= 0; i--) {
-        if(i == 0 && start == -1) start = i;
+    for (let i = end; i >= 0; i--) {
+        if (i == 0 && start == -1) start = i;
 
-        if(array[i] == ")") brackets++;
+        if (array[i] == ")") brackets++;
 
-        if(brackets == 0 && isOperator(array[i]) && i ==  end) return array[i];
-        else if(isOperator(array[i]) && brackets == 0) {
+        if (brackets == 0 && isOperator(array[i]) && i == end) return array[i];
+        else if (isOperator(array[i]) && brackets == 0) {
             start = i + 1;
             i = -1;
         }
 
-        if(array[i] == "(") brackets--;
+        if (array[i] == "(") brackets--;
     }
 
     let expression = new Array(end - start);
     let expressionIndex = 0;
 
-    for(let i = start; i <= end; i++) {
+    for (let i = start; i <= end; i++) {
         expression[expressionIndex] = array[i];
         expressionIndex++;
     }
@@ -821,29 +893,29 @@ function getBackExpression(start, array) {
     let brackets = 0;
     let end = -1;
 
-    for(let i = start; i <= array.length; i++) {
-        if(i == array.length) end = i;
-        if(array[i] == "(") brackets++;
-        if(isOperator(array[i])){
-            if(brackets == 0) {
+    for (let i = start; i <= array.length; i++) {
+        if (i == array.length) end = i;
+        if (array[i] == "(") brackets++;
+        if (isOperator(array[i])) {
+            if (brackets == 0) {
                 end = i;
                 i = array.length + 1;
             }
-            else if(i != start && brackets == 1 && array[i] == "(") {
+            else if (i != start && brackets == 1 && array[i] == "(") {
                 end = i;
                 i = array.length + 1;
             }
-            else if(brackets == 1 && array[i] == ")") {
-                end = i+1;
+            else if (brackets == 1 && array[i] == ")") {
+                end = i + 1;
                 i = array.length + 1;
             }
         }
-        if(array[i] == ")") brackets--;
+        if (array[i] == ")") brackets--;
     }
 
     let expression = new Array(end - start);
     let expressionIndex = 0;
-    for(let i = start; i < end; i++) {
+    for (let i = start; i < end; i++) {
         expression[expressionIndex] = array[i];
         expressionIndex++;
     }
@@ -857,29 +929,29 @@ function getDenominator(array) {
     let start = 0;
     let maxBracket = 1000;
 
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "(") brackets++;
-        else if(array[i] == ")") brackets--;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "(") brackets++;
+        else if (array[i] == ")") brackets--;
 
-        if(array[i] == "/" && brackets <= maxBracket) {
-            start = i+1;
+        if (array[i] == "/" && brackets <= maxBracket) {
+            start = i + 1;
             maxBracket = brackets;
         }
     }
 
     let denominator = ("");
 
-    if(start == 0) return denominator;
+    if (start == 0) return denominator;
 
     brackets = 0;
-    for(let i = start; i <= array.length && i >= 0; i++) {
-        
-        if(i == array.length && end == -1) {
+    for (let i = start; i <= array.length && i >= 0; i++) {
+
+        if (i == array.length && end == -1) {
             end = i;
         }
 
-        if(array[i] == "(") brackets++;
-        else if(brackets == 0 && isOperator(array[i])) {
+        if (array[i] == "(") brackets++;
+        else if (brackets == 0 && isOperator(array[i])) {
             end = i;
             i = array.length;
         }
@@ -889,7 +961,7 @@ function getDenominator(array) {
     denominator = new Array(end - start);
     let index = 0;
 
-    for(let i = start; i < end; i++) {
+    for (let i = start; i < end; i++) {
         denominator[index] = array[i];
         index++;
     }
@@ -902,11 +974,11 @@ function getDenominatorIndex(array) {
     let start = -1;
     let maxBracket = 1000;
 
-    for(let i = 0; i < array.length; i++) {
-        if(array[i] == "(") brackets++;
-        else if(array[i] == ")") brackets--;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == "(") brackets++;
+        else if (array[i] == ")") brackets--;
 
-        if(array[i] == "/" && brackets <= maxBracket) {
+        if (array[i] == "/" && brackets <= maxBracket) {
             start = i;
             maxBracket = brackets;
         }
@@ -915,33 +987,33 @@ function getDenominatorIndex(array) {
 }
 
 function isOperator(string) {
-    if(string === "+") return true;
-    else if(string === "-") return true;
-    else if(string === "*") return true;
-    else if(string === "/") return true;
-    else if(string === "(") return true;
-    else if(string === ")") return true;
+    if (string === "+") return true;
+    else if (string === "-") return true;
+    else if (string === "*") return true;
+    else if (string === "/") return true;
+    else if (string === "(") return true;
+    else if (string === ")") return true;
     else return false;
 }
 
 function isVariable(string) {
-    for(let i = 0; i < variables.length; i++) {
-        if(string == variables[i]) return true;
+    for (let i = 0; i < variables.length; i++) {
+        if (string == variables[i]) return true;
     }
     return false;
 }
 
 function compareArray(array1, array2) {
-    if(array1.length !=  array2.length) return false;
-    for(let i = 0; i < array1.length; i++) {
-        if(array1[i] != array2[i]) return false;
+    if (array1.length != array2.length) return false;
+    for (let i = 0; i < array1.length; i++) {
+        if (array1[i] != array2[i]) return false;
     }
     return true;
 }
 
 function copyArray(array) {
     let result = new Array(array.length);
-    for(let i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
         result[i] = array[i];
     }
 
