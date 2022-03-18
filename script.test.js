@@ -19,3 +19,13 @@ test('test quadratic functions', () => {
     expect(script.execute(quadratic2)).toBe("1\nor\n-1");
     expect(script.execute(quadratic3)).toBe("-4\nor\n-11");
 });
+
+test('test more complicated equations', () => {
+    formula1 = "x*2+2=3";
+    formula2 = "(4-(x/3)) = 2";
+    formula3 = "x+x+3 = x-7";
+
+    expect(script.execute(formula1)).toBe(0.5);
+    expect(script.execute(formula2)).toBe(6);
+    expect(script.execute(formula3)).toBe(-10);
+});
