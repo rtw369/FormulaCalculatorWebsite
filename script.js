@@ -1,4 +1,4 @@
-let formula1 = "(2*(x-4))/x = 6";
+let formula1 = "x = 2* Pi";
 let formula2 = "9+3 = 6";
 let formula3 = "(4-(x/3)) = 2";
 
@@ -7,8 +7,9 @@ let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
+let isDegree = true;
 
-//execute(formula3);
+execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -20,6 +21,9 @@ function execute(formula) {
 
     leftSide = cleanUp(leftSide);
     rightSide = cleanUp(rightSide);
+    
+    console.log(leftSide);
+    console.log(rightSide);
 
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
@@ -146,6 +150,8 @@ function getValue(string) {
     else if (isOperator(string)) {
         result = NaN;
     }
+    else if(string == "Pi") result = Math.PI;
+    else if(string == "E") result = Math.E;
     else {
         result = parseFloat(string);
     }
@@ -456,7 +462,7 @@ function expand(array) {
     finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
-    
+
     bracket = 0;
     isDenom = false;
 
