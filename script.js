@@ -1,5 +1,5 @@
 let formula1 = "(2*(x-4))/x = 6";
-let formula2 = "(2+2)/(3) = 6";
+let formula2 = "9+3 = 6";
 let formula3 = "(4-(x/3)) = 2";
 
 let leftSide = "";
@@ -8,7 +8,7 @@ let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
 
-execute(formula1);
+//execute(formula3);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -31,8 +31,8 @@ function execute(formula) {
         removeDenominator();
     }
 
-    console.log(leftSide);
-    console.log(rightSide);
+    //console.log(leftSide);
+    //console.log(rightSide);
 
     // check if quadratic equation is applicable
     let result = checkQuadratic();
@@ -194,14 +194,8 @@ function moveTerm() {
     leftExpression = cleanUp(leftExpression);
     rightExpression = cleanUp(rightExpression);
 
-    console.log(leftExpression);
-    console.log(rightExpression);
-    console.log("after");
-
     leftExpression = expand(leftExpression);
-    console.log(leftExpression);
     rightExpression = expand(rightExpression);
-    console.log(rightExpression);
 
     if (leftExpression.length != 0) {
         tempExpression.push("(");
@@ -326,6 +320,7 @@ function expand(array) {
     let firstTerm = new Array(0);
     let secondTerm = new Array(0);
     let length = 0;
+
 
     tempExpression = new Array(0);
     length = 0;
@@ -452,19 +447,18 @@ function expand(array) {
     expression.splice(0, length);
     expression = tempExpression.concat(expression);
 
+
+
+
     let finalArray = new Array(0);
     finalArray = finalArray.concat(frontArray);
     finalArray = finalArray.concat(expression);
     finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
-
-    if (finalArray[0] == "(" && finalArray[finalArray.length - 1] == ")") {
-        finalArray = finalArray.slice(1, finalArray.length - 1);
-    }
-
+    
     bracket = 0;
-    let isDenom = false;
+    isDenom = false;
 
     for (i = 0; i < finalArray.length; i++) {
         if (finalArray[i] == "/") {
@@ -511,28 +505,28 @@ function checkQuadratic() {
     let tempExpression = new Array(0);
     let hasVariable = true;
 
-    for(let i = 0; i < leftSide.length; i += term.length) {
+    for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
-        if(!(term.includes(variable))) {
+        if (!(term.includes(variable))) {
             hasVariable = false;
         }
     }
-    for(let i = 0; i < rightSide.length; i += term.length) {
+    for (let i = 0; i < rightSide.length; i += term.length) {
         term = getTerm(i, rightSide);
-        if(!(term.includes(variable))) {
+        if (!(term.includes(variable))) {
             hasVariable = false;
         }
     }
 
-    if(hasVariable) {
-        for(let i = 0; i < leftSide.length; i += term.length) {
+    if (hasVariable) {
+        for (let i = 0; i < leftSide.length; i += term.length) {
             term = getTerm(i, leftSide);
             term.splice(term.indexOf(variable), 1, 1);
             tempExpression = tempExpression.concat(term);
         }
         leftSide = copyArray(tempExpression);
         tempExpression = new Array(0);
-        for(let i = 0; i < rightSide.length; i += term.length) {
+        for (let i = 0; i < rightSide.length; i += term.length) {
             term = getTerm(i, rightSide);
             term.splice(term.indexOf(variable), 1, 1);
             tempExpression = tempExpression.concat(term);
@@ -540,7 +534,7 @@ function checkQuadratic() {
         rightSide = copyArray(tempExpression);
     }
 
-        
+
     term = new Array(0);
     let count;
     let quadratic = false;
