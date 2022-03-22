@@ -1,4 +1,4 @@
-let formula1 = "x = 2* Pi";
+let formula1 = "x = sin0.5";
 let formula2 = "9+3 = 6";
 let formula3 = "(4-(x/3)) = 2";
 
@@ -7,7 +7,7 @@ let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
-let isDegree = true;
+let isDegree = false;
 
 execute(formula1);
 
@@ -76,7 +76,12 @@ function evaluate(array) {
     }
 
     // no exponents
-    // yes functions though
+    for(let i = 0; i < array.length; i++) {
+        if(isFunction(array[i])) {
+            value = evaluateFunctions(array[i], array[i+1]);
+            array.splice(i, 2, value);
+        }
+    }
 
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") {
@@ -155,6 +160,44 @@ function getValue(string) {
     else {
         result = parseFloat(string);
     }
+
+    return result;
+}
+
+function evaluateFunctions(operator, value) {
+    let result;
+
+    if(isDegree) value = value * (Math.PI/180);
+
+    switch(operator) {
+        case "sin":
+            result = Math.sin(value);
+            break;
+
+        case "cos":
+            result = Math.cos(value);
+            break;
+
+        case "tan":
+            result = Math.tan(value);
+            break;
+        
+        case "asin":
+            result = Math.asin(value);
+            break;
+
+        case "acos":
+            result = Math.acos(value);
+            break;
+
+        case "atan":
+            result = Math.atan(value);
+            break;
+        
+        default:
+    }
+
+    //if(isDegree) result = result * (180/Math.PI);
 
     return result;
 }
@@ -993,6 +1036,16 @@ function isOperator(string) {
     else if (string === "/") return true;
     else if (string === "(") return true;
     else if (string === ")") return true;
+    else return false;
+}
+
+function isFunction(string) {
+    if(string == "sin") return true;
+    else if(string == "cos") return true;
+    else if(string == "tan") return true;
+    else if(string == "asin") return true;
+    else if(string == "acos") return true;
+    else if(string == "atan") return true;
     else return false;
 }
 
