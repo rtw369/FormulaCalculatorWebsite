@@ -29,3 +29,19 @@ test('test more complicated equations', () => {
     expect(script.execute(formula2)).toBe(6);
     expect(script.execute(formula3)).toBe(-10);
 });
+
+test('test trignometry functions', () => {
+    let sine = "x = sin90";
+    let cosine = "x = cos90";
+    let tangent = "x = tan45";
+    let asine = "x = asin0.5";
+    let acosine = "x = acos0.5";
+    let atangent = "x = atan1";
+
+    expect(script.execute(sine)).toBe(1);
+    expect(script.execute(cosine)).toBe(0);
+    expect(script.execute(tangent)).toBe(1);
+    expect(script.execute(asine)).toBe(30);
+    expect(script.execute(acosine)).toBe(60);
+    expect(script.execute(atangent)).toBe(45);
+});
