@@ -1,4 +1,4 @@
-let formula1 = "x = sin0.5";
+let formula1 = "x = 3+sin(90)";
 let formula2 = "9+3 = 6";
 let formula3 = "(4-(x/3)) = 2";
 
@@ -7,7 +7,7 @@ let rightSide = "";
 let variables = new Array(0);
 let values = new Array(0);
 let variable = "x";
-let isDegree = false;
+let isDegree = true;
 
 execute(formula1);
 
@@ -166,8 +166,16 @@ function getValue(string) {
 
 function evaluateFunctions(operator, value) {
     let result;
+    value = getValue(value);
 
-    if(isDegree) value = value * (Math.PI/180);
+    switch(operator) {
+        case "sin":
+        case "cos":
+        case "tan":
+            if(isDegree) value = value * (Math.PI/180);
+            break;
+        default:
+    }
 
     switch(operator) {
         case "sin":
@@ -197,7 +205,15 @@ function evaluateFunctions(operator, value) {
         default:
     }
 
-    //if(isDegree) result = result * (180/Math.PI);
+    switch(operator) {
+        case "asin":
+        case "acos":
+        case "atan":
+            if(isDegree) result = result * (180/Math.PI);
+            break;
+
+        default:
+    }
 
     return result;
 }
@@ -391,6 +407,7 @@ function expand(array) {
 
         tempExpression.push(")");
     }
+    else if(isFunction(firstExpression[0])) {}
     else {
         switch (expression[firstExpression.length]) {
             case "+":
@@ -507,19 +524,20 @@ function expand(array) {
     finalArray = cleanUp(finalArray);
 
     bracket = 0;
-    isDenom = false;
+    let ignore = false;
 
     for (i = 0; i < finalArray.length; i++) {
         if (finalArray[i] == "/") {
-            isDenom = true;
+            ignore = true;
         }
+        else if (isFunction(finalArray[i]))
 
-        if (isDenom) {
+        if (ignore) {
             if (finalArray[i] == "(") bracket++;
             if (finalArray[i] == ")") {
                 bracket--;
                 if (bracket == 0) {
-                    isDenom = false;
+                    ignore = false;
                 }
             }
         }
@@ -542,6 +560,12 @@ function cleanUp(array) {
                     array.splice(i, 1);
                     i = 0;
                 }
+                /*
+                else if (isFunction(array[i - 1]) || isFunction(array[i + 1])) {
+                    array.splice(i, 1);
+                    i = 0;
+                }
+                */
             }
         }
     }
@@ -788,6 +812,16 @@ function createArray(expression) {
     let modifiedExpression = "";
 
     for (let i = 0; i < expression.length; i++) {
+        switch(expression.substr(i,4)) {
+            case "asin":
+            case "acos":
+            case "atan":
+                modifiedExpression += " " + expression.substr(i,4) + " ";
+                i += 4;
+                break;
+            default: 
+        }
+
         switch (expression.substr(i, 3)) {
             case "sin":
             case "cos":
