@@ -40,8 +40,8 @@ test('test trignometry functions', () => {
 
     expect(script.execute(sine)).toBe(1);
     expect(script.execute(cosine)).toBe(0);
-    expect(script.execute(tangent)).toBe(1);
-    expect(script.execute(asine)).toBe(30);
-    expect(script.execute(acosine)).toBe(60);
-    expect(script.execute(atangent)).toBe(45);
+    expect(Math.round(script.execute(tangent))).toBe(1);
+    expect(Math.round(script.execute(asine))).toBe(30);
+    expect(Math.round(script.execute(acosine))).toBe(60);
+    expect(Math.round(script.execute(atangent))).toBe(45);
 });

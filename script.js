@@ -1,4 +1,4 @@
-let formula1 = "x = 3+sin(90)";
+let formula1 = "x = cos(60)";
 let formula2 = "9+3 = 6";
 let formula3 = "(4-(x/3)) = 2";
 
@@ -12,6 +12,11 @@ let isDegree = true;
 execute(formula1);
 
 function execute(formula) {
+
+    let test = Math.PI;
+    console.log(Math.cos(Math.PI));
+    console.log(Math.cos(test));
+
     divideFormula(removeSpaces(formula));
     leftSide = createArray(leftSide);
     rightSide = createArray(rightSide);
@@ -204,6 +209,8 @@ function evaluateFunctions(operator, value) {
         
         default:
     }
+
+    if(result <= 0.0000000001) result = 0;
 
     switch(operator) {
         case "asin":
