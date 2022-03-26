@@ -1,4 +1,4 @@
-let formula1 = "x = cos(60)";
+let formula1 = "x = cos(20+160)";
 let formula2 = "((1+2)((3-4)(5+6))(7-8)) = x";
 let formula3 = "(4-(x/3)) = 2";
 
@@ -9,7 +9,7 @@ let values = new Array(0);
 let variable = "x";
 let isDegree = true;
 
-execute(formula2);
+//execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -24,6 +24,9 @@ function execute(formula) {
 
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
+
+    //console.log(leftSide);
+    //console.log(rightSide);
 
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
@@ -205,7 +208,7 @@ function evaluateFunctions(operator, value) {
         default:
     }
 
-    if(result <= 0.0000000001) result = 0;
+    if(result <= 0.0000000001 && result > 0) result = 0;
 
     switch(operator) {
         case "asin":
@@ -260,6 +263,9 @@ function moveTerm() {
 
     leftExpression = cleanUp(leftExpression);
     rightExpression = cleanUp(rightExpression);
+
+    if(leftExpression[0] == "+") leftExpression.shift();
+    if(rightExpression[0] == "+") rightExpression.shift();
 
     leftExpression = expand(leftExpression);
     rightExpression = expand(rightExpression);
@@ -409,8 +415,7 @@ function expand(array) {
 
         tempExpression.push(")");
     }
-    else if(isFunction(firstExpression[0])) {}
-    else {
+    else if(!(isFunction(firstExpression[0]))) {
         switch (expression[firstExpression.length]) {
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
@@ -513,11 +518,13 @@ function expand(array) {
     expression = tempExpression.concat(expression);
 
     let finalArray = new Array(0);
-    finalArray = finalArray.concat(frontArray);
+    if(frontArray.length != 1 || frontArray[0] != "(") finalArray = finalArray.concat(frontArray);
     finalArray = finalArray.concat(expression);
-    finalArray = finalArray.concat(backArray);
+    if(backArray.length !=1 || backArray[0] != ")") finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
+
+    //if(finalArray[0] == "+") finalArray.shift();
 
     bracket = 0;
     let ignore = false;
