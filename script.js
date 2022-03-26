@@ -1,5 +1,5 @@
 let formula1 = "x = cos(60)";
-let formula2 = "9+3 = 6";
+let formula2 = "((1+2)((3-4)(5+6))(7-8)) = x";
 let formula3 = "(4-(x/3)) = 2";
 
 let leftSide = "";
@@ -9,14 +9,9 @@ let values = new Array(0);
 let variable = "x";
 let isDegree = true;
 
-execute(formula1);
+execute(formula2);
 
 function execute(formula) {
-
-    let test = Math.PI;
-    console.log(Math.cos(Math.PI));
-    console.log(Math.cos(test));
-
     divideFormula(removeSpaces(formula));
     leftSide = createArray(leftSide);
     rightSide = createArray(rightSide);
@@ -26,15 +21,15 @@ function execute(formula) {
 
     leftSide = cleanUp(leftSide);
     rightSide = cleanUp(rightSide);
-    
-    console.log(leftSide);
-    console.log(rightSide);
 
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
 
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
+
+    //console.log(leftSide);
+    //console.log(rightSide);
 
     while (leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
@@ -420,7 +415,6 @@ function expand(array) {
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
                 secondExpression = expand(secondExpression);
-                tempExpression.push("(");
                 length = firstExpression.length + 1 + secondExpression.length;
 
                 if (firstExpression[0] == "(") {
@@ -443,8 +437,6 @@ function expand(array) {
                 else tempExpression.push("+");
 
                 tempExpression = tempExpression.concat(secondExpression);
-
-                tempExpression.push(")");
                 break;
 
             case "-":
@@ -520,9 +512,6 @@ function expand(array) {
     expression.splice(0, length);
     expression = tempExpression.concat(expression);
 
-
-
-
     let finalArray = new Array(0);
     finalArray = finalArray.concat(frontArray);
     finalArray = finalArray.concat(expression);
@@ -537,7 +526,9 @@ function expand(array) {
         if (finalArray[i] == "/") {
             ignore = true;
         }
-        else if (isFunction(finalArray[i]))
+        else if (isFunction(finalArray[i])) {
+            ignore = true;
+        }
 
         if (ignore) {
             if (finalArray[i] == "(") bracket++;
@@ -764,11 +755,14 @@ function removeDenominator() {
 
     for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
+
         modifiedTerm = copyArray(term);
         modifiedRemove = copyArray(remove);
         denominator = getDenominator(term);
+
         for (let n = remove.length - 1; n >= 0; n -= expression.length) {
             expression = getFrontExpression(n, remove);
+
             if (compareArray(denominator, expression)) {
                 modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
                 modifiedRemove.splice(n - expression.length, expression.length + 1);
