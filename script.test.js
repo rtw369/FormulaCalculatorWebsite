@@ -45,3 +45,15 @@ test('test trignometry functions', () => {
     expect(Math.round(script.execute(acosine))).toBe(60);
     expect(Math.round(script.execute(atangent))).toBe(45);
 });
+
+test('a little more complicated trignometry functions', () => {
+    let function1 = "sin90 = x + 3";
+    let function2 = "x*sin90 = 1";
+    let function3 = "30*sinx = 30";
+    let function4 = "30*sin(x+3) = 30";
+
+    expect(script.execute(function1)).toBe(-2);
+    expect(script.execute(function2)).toBe(1);
+    expect(script.execute(function3)).toBe(90);
+    expect(script.execute(function4)).toBe(87);
+});
