@@ -1,6 +1,6 @@
-let formula1 = "x = cos(20+160)";
-let formula2 = "((1+2)((3-4)(5+6))(7-8)) = x";
-let formula3 = "(4-(x/3)) = 2";
+let formula1 = "30*sin(x+3) = 30";
+let formula2 = "x = asin((30)/(30))";
+let formula3 = "sin90 = x + 3";
 
 let leftSide = "";
 let rightSide = "";
@@ -9,7 +9,7 @@ let values = new Array(0);
 let variable = "x";
 let isDegree = true;
 
-//execute(formula1);
+execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -25,21 +25,25 @@ function execute(formula) {
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
 
-    //console.log(leftSide);
-    //console.log(rightSide);
+    console.log(leftSide);
+    console.log(rightSide);
 
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
 
-    //console.log(leftSide);
-    //console.log(rightSide);
+    console.log(leftSide);
+    console.log(rightSide);
 
+    while(getDenominatorIndex(leftSide) != -1 || getDenominatorIndex(rightSide) != -1) {
+        removeDenominator();
+    }
+/*
     while (leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
         removeDenominator();
     }
-
-    //console.log(leftSide);
-    //console.log(rightSide);
+*/
+    console.log(leftSide);
+    console.log(rightSide);
 
     // check if quadratic equation is applicable
     let result = checkQuadratic();
@@ -79,9 +83,9 @@ function evaluate(array) {
     }
 
     // no exponents
-    for(let i = 0; i < array.length; i++) {
-        if(isFunction(array[i])) {
-            value = evaluateFunctions(array[i], array[i+1]);
+    for (let i = 0; i < array.length; i++) {
+        if (isFunction(array[i])) {
+            value = evaluateFunctions(array[i], array[i + 1]);
             array.splice(i, 2, value);
         }
     }
@@ -158,8 +162,8 @@ function getValue(string) {
     else if (isOperator(string)) {
         result = NaN;
     }
-    else if(string == "Pi") result = Math.PI;
-    else if(string == "E") result = Math.E;
+    else if (string == "Pi") result = Math.PI;
+    else if (string == "E") result = Math.E;
     else {
         result = parseFloat(string);
     }
@@ -171,16 +175,16 @@ function evaluateFunctions(operator, value) {
     let result;
     value = getValue(value);
 
-    switch(operator) {
+    switch (operator) {
         case "sin":
         case "cos":
         case "tan":
-            if(isDegree) value = value * (Math.PI/180);
+            if (isDegree) value = value * (Math.PI / 180);
             break;
         default:
     }
 
-    switch(operator) {
+    switch (operator) {
         case "sin":
             result = Math.sin(value);
             break;
@@ -192,7 +196,7 @@ function evaluateFunctions(operator, value) {
         case "tan":
             result = Math.tan(value);
             break;
-        
+
         case "asin":
             result = Math.asin(value);
             break;
@@ -204,17 +208,17 @@ function evaluateFunctions(operator, value) {
         case "atan":
             result = Math.atan(value);
             break;
-        
+
         default:
     }
 
-    if(result <= 0.0000000001 && result > 0) result = 0;
+    if (result <= 0.0000000001 && result > 0) result = 0;
 
-    switch(operator) {
+    switch (operator) {
         case "asin":
         case "acos":
         case "atan":
-            if(isDegree) result = result * (180/Math.PI);
+            if (isDegree) result = result * (180 / Math.PI);
             break;
 
         default:
@@ -264,20 +268,52 @@ function moveTerm() {
     leftExpression = cleanUp(leftExpression);
     rightExpression = cleanUp(rightExpression);
 
-    if(leftExpression[0] == "+") leftExpression.shift();
-    if(rightExpression[0] == "+") rightExpression.shift();
+    if (leftExpression[0] == "+") leftExpression.shift();
+    if (rightExpression[0] == "+") rightExpression.shift();
 
     leftExpression = expand(leftExpression);
     rightExpression = expand(rightExpression);
 
+
+    let ignore = false;
+    let brackets = 0;
+    let tempLeftExpression = new Array(0);
+
     if (leftExpression.length != 0) {
+
         tempExpression.push("(");
+
         for (let i = 0; i < leftExpression.length; i++) {
-            if (leftExpression[i] == variable) {
-                tempExpression.push("1");
+            if (isFunction(leftExpression[i])) {
+                for (let n = i; n < leftExpression.length; n++) {
+                    if (leftExpression[n] == "(") brackets++;
+                    if (leftExpression[n] == ")") {
+                        brackets--;
+                        if (brackets == 0) n = leftExpression.length;
+                    }
+                    if (leftExpression[n] == variable) ignore = true;
+                }
             }
-            else tempExpression.push(leftExpression[i]);
+
+            if (ignore) {
+                tempLeftExpression.push(leftExpression[i]);
+                if (leftExpression[i] == "(") brackets++;
+                if (leftExpression[i] == ")") {
+                    brackets--;
+                    if (brackets == 0) ignore = false;
+                }
+            }
+            else {
+                if (leftExpression[i] == variable) {
+                    tempExpression.push("1");
+                }
+                else {
+                    tempExpression.push(leftExpression[i]);
+                }
+            }
         }
+
+        if (isOperator(tempExpression[tempExpression.length - 1])) tempExpression.pop();
 
         tempExpression.push(")");
 
@@ -285,6 +321,51 @@ function moveTerm() {
         rightExpression.push(")");
         rightExpression.push("/");
         rightExpression = rightExpression.concat(tempExpression);
+
+        leftExpression = copyArray(tempLeftExpression);
+
+        if (isFunction(leftExpression[0])) {
+            rightExpression.unshift("(");
+            rightExpression.push(")");
+
+            switch (leftExpression[0]) {
+                case "sin":
+                    rightExpression.unshift("asin");
+                    break;
+
+                case "cos":
+                    rightExpression.unshift("acos");
+                    break;
+
+                case "tan":
+                    rightExpression.unshift("atan");
+                    break;
+
+                case "asin":
+                    rightExpression.unshift("sin");
+                    break;
+
+                case "acos":
+                    rightExpression.unshift("cos");
+                    break;
+
+                case "atan":
+                    rightExpression.unshift("tan");
+                    break;
+
+                default:
+            }
+            leftExpression.shift();
+            leftExpression = expand(leftExpression);
+
+            leftSide = copyArray(leftExpression);
+            rightSide = copyArray(rightExpression);
+
+            console.log(leftSide);
+            console.log(rightSide);
+
+            return moveTerm();
+        }
     }
 
     return evaluate(rightExpression);
@@ -351,17 +432,34 @@ function expand(array) {
     let frontArray = new Array(0);
     let backArray = new Array(0);
 
+    let ignore = false;
+    let brackets = 0;
+
     //find secondBracket
     for (let i = 0; i < array.length; i++) {
-        if (array[i] == "(") {
-            bracket++;
-            if (bracket > numOfBrackets) {
-                numOfBrackets = bracket;
-                secondBracket = lastBracketIndex;
-            }
-            if (bracket >= numOfBrackets) lastBracketIndex = i;
+        if (isFunction(array[i])) {
+            ignore = true;
         }
-        if (array[i] == ")") bracket--;
+
+        if (ignore) {
+            if (array[i] == "(") brackets++;
+            if (array[i] == ")") {
+                brackets--;
+                if (brackets == 0) ignore = false;
+            }
+
+        }
+        else {
+            if (array[i] == "(") {
+                bracket++;
+                if (bracket > numOfBrackets) {
+                    numOfBrackets = bracket;
+                    secondBracket = lastBracketIndex;
+                }
+                if (bracket >= numOfBrackets) lastBracketIndex = i;
+            }
+            if (array[i] == ")") bracket--;
+        }
     }
 
     //get the every expressions within the brackets
@@ -401,6 +499,7 @@ function expand(array) {
 
     if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
+
         length = firstExpression.length + 1 + secondExpression.length;
         tempExpression.push("(");
 
@@ -415,7 +514,7 @@ function expand(array) {
 
         tempExpression.push(")");
     }
-    else if(!(isFunction(firstExpression[0]))) {
+    else if (!(isFunction(firstExpression[0]))) {
         switch (expression[firstExpression.length]) {
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
@@ -518,16 +617,20 @@ function expand(array) {
     expression = tempExpression.concat(expression);
 
     let finalArray = new Array(0);
-    if(frontArray.length != 1 || frontArray[0] != "(") finalArray = finalArray.concat(frontArray);
+    let frontCheck = false;
+    let backCheck = false;
+
+    if (frontArray.length != 1 || frontArray[0] != "(") frontCheck = true;
+    if (backArray.length != 1 || backArray[0] != ")") backCheck = true;
+
+    if (frontCheck && backCheck) finalArray = finalArray.concat(frontArray);
     finalArray = finalArray.concat(expression);
-    if(backArray.length !=1 || backArray[0] != ")") finalArray = finalArray.concat(backArray);
+    if (frontCheck && backCheck) finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
 
-    //if(finalArray[0] == "+") finalArray.shift();
-
-    bracket = 0;
-    let ignore = false;
+    ignore = false;
+    brackets = 0;
 
     for (i = 0; i < finalArray.length; i++) {
         if (finalArray[i] == "/") {
@@ -538,10 +641,10 @@ function expand(array) {
         }
 
         if (ignore) {
-            if (finalArray[i] == "(") bracket++;
+            if (finalArray[i] == "(") brackets++;
             if (finalArray[i] == ")") {
-                bracket--;
-                if (bracket == 0) {
+                brackets--;
+                if (brackets == 0) {
                     ignore = false;
                 }
             }
@@ -565,12 +668,6 @@ function cleanUp(array) {
                     array.splice(i, 1);
                     i = 0;
                 }
-                /*
-                else if (isFunction(array[i - 1]) || isFunction(array[i + 1])) {
-                    array.splice(i, 1);
-                    i = 0;
-                }
-                */
             }
         }
     }
@@ -757,52 +854,55 @@ function removeDenominator() {
         }
     }
 
-    let modifiedTerm = new Array(0);
-    let modifiedRemove = new Array(0);
+    //if (remove.length != 0) {
 
-    for (let i = 0; i < leftSide.length; i += term.length) {
-        term = getTerm(i, leftSide);
+        let modifiedTerm = new Array(0);
+        let modifiedRemove = new Array(0);
 
-        modifiedTerm = copyArray(term);
-        modifiedRemove = copyArray(remove);
-        denominator = getDenominator(term);
+        for (let i = 0; i < leftSide.length; i += term.length) {
+            term = getTerm(i, leftSide);
 
-        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
-            expression = getFrontExpression(n, remove);
+            modifiedTerm = copyArray(term);
+            modifiedRemove = copyArray(remove);
+            denominator = getDenominator(term);
 
-            if (compareArray(denominator, expression)) {
-                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                modifiedRemove.splice(n - expression.length, expression.length + 1);
-                leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
-                n = -1;
-            }
-            else if (n == 0 && !compareArray(denominator, expression)) {
-                leftFinal = leftFinal.concat(term.concat(remove));
-            }
-        }
-    }
+            for (let n = remove.length - 1; n >= 0; n -= expression.length) {
+                expression = getFrontExpression(n, remove);
 
-    for (let i = 0; i < rightSide.length; i += term.length) {
-        term = getTerm(i, rightSide);
-        modifiedTerm = copyArray(term);
-        modifiedRemove = copyArray(remove);
-        denominator = getDenominator(term);
-        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
-            expression = getFrontExpression(n, remove);
-            if (compareArray(denominator, expression)) {
-                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                modifiedRemove.splice(n - expression.length, expression.length + 1);
-                rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
-                n = -1;
-            }
-            else if (n == 0 && !compareArray(denominator, expression)) {
-                rightFinal = rightFinal.concat(term.concat(remove));
+                if (compareArray(denominator, expression)) {
+                    modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                    modifiedRemove.splice(n - expression.length, expression.length + 1);
+                    leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
+                    n = -1;
+                }
+                else if (n == 0 && !compareArray(denominator, expression)) {
+                    leftFinal = leftFinal.concat(term.concat(remove));
+                }
             }
         }
-    }
 
-    leftSide = copyArray(leftFinal);
-    rightSide = copyArray(rightFinal);
+        for (let i = 0; i < rightSide.length; i += term.length) {
+            term = getTerm(i, rightSide);
+            modifiedTerm = copyArray(term);
+            modifiedRemove = copyArray(remove);
+            denominator = getDenominator(term);
+            for (let n = remove.length - 1; n >= 0; n -= expression.length) {
+                expression = getFrontExpression(n, remove);
+                if (compareArray(denominator, expression)) {
+                    modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                    modifiedRemove.splice(n - expression.length, expression.length + 1);
+                    rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
+                    n = -1;
+                }
+                else if (n == 0 && !compareArray(denominator, expression)) {
+                    rightFinal = rightFinal.concat(term.concat(remove));
+                }
+            }
+        }
+
+        leftSide = copyArray(leftFinal);
+        rightSide = copyArray(rightFinal);
+    //}
 }
 
 function removeSpaces(formula) {
@@ -820,14 +920,14 @@ function createArray(expression) {
     let modifiedExpression = "";
 
     for (let i = 0; i < expression.length; i++) {
-        switch(expression.substr(i,4)) {
+        switch (expression.substr(i, 4)) {
             case "asin":
             case "acos":
             case "atan":
-                modifiedExpression += " " + expression.substr(i,4) + " ";
+                modifiedExpression += " " + expression.substr(i, 4) + " ";
                 i += 4;
                 break;
-            default: 
+            default:
         }
 
         switch (expression.substr(i, 3)) {
@@ -1014,13 +1114,27 @@ function getDenominator(array) {
     let start = 0;
     let maxBracket = 1000;
 
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] == "(") brackets++;
-        else if (array[i] == ")") brackets--;
+    let ignore = false;
+    let bracket = 0;
 
-        if (array[i] == "/" && brackets <= maxBracket) {
-            start = i + 1;
-            maxBracket = brackets;
+    for (let i = 0; i < array.length; i++) {
+        if (isFunction(array[i])) ignore = true;
+
+        if (ignore) {
+            if (array[i] == "(") bracket++;
+            if (array[i] == ")") {
+                bracket--;
+                if (bracket == 0) ignore = false;
+            }
+        }
+        else {
+            if (array[i] == "(") brackets++;
+            else if (array[i] == ")") brackets--;
+
+            if (array[i] == "/" && brackets <= maxBracket) {
+                start = i + 1;
+                maxBracket = brackets;
+            }
         }
     }
 
@@ -1059,13 +1173,27 @@ function getDenominatorIndex(array) {
     let start = -1;
     let maxBracket = 1000;
 
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] == "(") brackets++;
-        else if (array[i] == ")") brackets--;
+    let ignore = false;
+    let bracket = 0;
 
-        if (array[i] == "/" && brackets <= maxBracket) {
-            start = i;
-            maxBracket = brackets;
+    for (let i = 0; i < array.length; i++) {
+        if (isFunction(array[i])) ignore = true;
+
+        if (ignore) {
+            if (array[i] == "(") bracket++;
+            if (array[i] == ")") {
+                bracket--;
+                if (bracket == 0) ignore = false;
+            }
+        }
+        else {
+            if (array[i] == "(") brackets++;
+            else if (array[i] == ")") brackets--;
+
+            if (array[i] == "/" && brackets <= maxBracket) {
+                start = i;
+                maxBracket = brackets;
+            }
         }
     }
     return start;
@@ -1082,12 +1210,12 @@ function isOperator(string) {
 }
 
 function isFunction(string) {
-    if(string == "sin") return true;
-    else if(string == "cos") return true;
-    else if(string == "tan") return true;
-    else if(string == "asin") return true;
-    else if(string == "acos") return true;
-    else if(string == "atan") return true;
+    if (string == "sin") return true;
+    else if (string == "cos") return true;
+    else if (string == "tan") return true;
+    else if (string == "asin") return true;
+    else if (string == "acos") return true;
+    else if (string == "atan") return true;
     else return false;
 }
 
