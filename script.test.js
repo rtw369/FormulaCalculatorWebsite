@@ -30,6 +30,14 @@ test('test more complicated equations', () => {
     expect(script.execute(formula3)).toBe(-10);
 });
 
+test('test powers', () => {
+    formula1 = "x = 2^3";
+    formula2 = "(3)^2 = x"
+
+    expect(script.execute(formula1)).toBe(8);
+    expect(script.execute(formula2)).toBe(9);
+});
+
 test('test trignometry functions', () => {
     let sine = "x = sin90";
     let cosine = "x = cos90";
