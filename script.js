@@ -1,5 +1,5 @@
 let formula1 = "30*sin(x+3) = 30";
-let formula2 = "x = asin((30)/(30))";
+let formula2 = "sin90 = x + 3";
 let formula3 = "sin90 = x + 3";
 
 let leftSide = "";
@@ -9,7 +9,7 @@ let values = new Array(0);
 let variable = "x";
 let isDegree = true;
 
-execute(formula1);
+//execute(formula1);
 
 function execute(formula) {
     divideFormula(removeSpaces(formula));
@@ -25,25 +25,12 @@ function execute(formula) {
     leftSide = expandPower(leftSide);
     rightSide = expandPower(rightSide);
 
-    console.log(leftSide);
-    console.log(rightSide);
-
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
 
-    console.log(leftSide);
-    console.log(rightSide);
-
-    while(getDenominatorIndex(leftSide) != -1 || getDenominatorIndex(rightSide) != -1) {
+    while (getDenominatorIndex(leftSide) != -1 || getDenominatorIndex(rightSide) != -1) {
         removeDenominator();
     }
-/*
-    while (leftSide.indexOf("/") != -1 || rightSide.indexOf("/") != -1) {
-        removeDenominator();
-    }
-*/
-    console.log(leftSide);
-    console.log(rightSide);
 
     // check if quadratic equation is applicable
     let result = checkQuadratic();
@@ -274,7 +261,6 @@ function moveTerm() {
     leftExpression = expand(leftExpression);
     rightExpression = expand(rightExpression);
 
-
     let ignore = false;
     let brackets = 0;
     let tempLeftExpression = new Array(0);
@@ -360,9 +346,6 @@ function moveTerm() {
 
             leftSide = copyArray(leftExpression);
             rightSide = copyArray(rightExpression);
-
-            console.log(leftSide);
-            console.log(rightSide);
 
             return moveTerm();
         }
@@ -856,52 +839,52 @@ function removeDenominator() {
 
     //if (remove.length != 0) {
 
-        let modifiedTerm = new Array(0);
-        let modifiedRemove = new Array(0);
+    let modifiedTerm = new Array(0);
+    let modifiedRemove = new Array(0);
 
-        for (let i = 0; i < leftSide.length; i += term.length) {
-            term = getTerm(i, leftSide);
+    for (let i = 0; i < leftSide.length; i += term.length) {
+        term = getTerm(i, leftSide);
 
-            modifiedTerm = copyArray(term);
-            modifiedRemove = copyArray(remove);
-            denominator = getDenominator(term);
+        modifiedTerm = copyArray(term);
+        modifiedRemove = copyArray(remove);
+        denominator = getDenominator(term);
 
-            for (let n = remove.length - 1; n >= 0; n -= expression.length) {
-                expression = getFrontExpression(n, remove);
+        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
+            expression = getFrontExpression(n, remove);
 
-                if (compareArray(denominator, expression)) {
-                    modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                    modifiedRemove.splice(n - expression.length, expression.length + 1);
-                    leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
-                    n = -1;
-                }
-                else if (n == 0 && !compareArray(denominator, expression)) {
-                    leftFinal = leftFinal.concat(term.concat(remove));
-                }
+            if (compareArray(denominator, expression)) {
+                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                modifiedRemove.splice(n - expression.length, expression.length + 1);
+                leftFinal = leftFinal.concat(modifiedTerm.concat(modifiedRemove));
+                n = -1;
+            }
+            else if (n == 0 && !compareArray(denominator, expression)) {
+                leftFinal = leftFinal.concat(term.concat(remove));
             }
         }
+    }
 
-        for (let i = 0; i < rightSide.length; i += term.length) {
-            term = getTerm(i, rightSide);
-            modifiedTerm = copyArray(term);
-            modifiedRemove = copyArray(remove);
-            denominator = getDenominator(term);
-            for (let n = remove.length - 1; n >= 0; n -= expression.length) {
-                expression = getFrontExpression(n, remove);
-                if (compareArray(denominator, expression)) {
-                    modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
-                    modifiedRemove.splice(n - expression.length, expression.length + 1);
-                    rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
-                    n = -1;
-                }
-                else if (n == 0 && !compareArray(denominator, expression)) {
-                    rightFinal = rightFinal.concat(term.concat(remove));
-                }
+    for (let i = 0; i < rightSide.length; i += term.length) {
+        term = getTerm(i, rightSide);
+        modifiedTerm = copyArray(term);
+        modifiedRemove = copyArray(remove);
+        denominator = getDenominator(term);
+        for (let n = remove.length - 1; n >= 0; n -= expression.length) {
+            expression = getFrontExpression(n, remove);
+            if (compareArray(denominator, expression)) {
+                modifiedTerm.splice(getDenominatorIndex(term), denominator.length + 1);
+                modifiedRemove.splice(n - expression.length, expression.length + 1);
+                rightFinal = rightFinal.concat(modifiedTerm.concat(modifiedRemove));
+                n = -1;
+            }
+            else if (n == 0 && !compareArray(denominator, expression)) {
+                rightFinal = rightFinal.concat(term.concat(remove));
             }
         }
+    }
 
-        leftSide = copyArray(leftFinal);
-        rightSide = copyArray(rightFinal);
+    leftSide = copyArray(leftFinal);
+    rightSide = copyArray(rightFinal);
     //}
 }
 
@@ -1078,26 +1061,40 @@ function getBackExpression(start, array) {
     let brackets = 0;
     let end = -1;
 
+    let ignore = false;
+    let bracket = 0;
+
     for (let i = start; i <= array.length; i++) {
         if (i == array.length) end = i;
-        if (array[i] == "(") brackets++;
-        if (isOperator(array[i])) {
-            if (brackets == 0) {
-                end = i;
-                i = array.length + 1;
-            }
-            else if (i != start && brackets == 1 && array[i] == "(") {
-                end = i;
-                i = array.length + 1;
-            }
-            else if (brackets == 1 && array[i] == ")") {
-                end = i + 1;
-                i = array.length + 1;
-            }
-        }
-        if (array[i] == ")") brackets--;
-    }
+        if (isFunction(array[start])) ignore = true;
 
+        if (ignore) {
+            if (array[i] == "(") bracket++;
+            if (array[i] == ")") {
+                bracket--;
+                if (bracket == 0) end = i;
+            }
+            if(i == array.length) end = i;
+        }
+        else {
+            if (array[i] == "(") brackets++;
+            if (isOperator(array[i])) {
+                if (brackets == 0) {
+                    end = i;
+                    i = array.length + 1;
+                }
+                else if (i != start && brackets == 1 && array[i] == "(") {
+                    end = i;
+                    i = array.length + 1;
+                }
+                else if (brackets == 1 && array[i] == ")") {
+                    end = i + 1;
+                    i = array.length + 1;
+                }
+            }
+            if (array[i] == ")") brackets--;
+        }
+    }
     let expression = new Array(end - start);
     let expressionIndex = 0;
     for (let i = start; i < end; i++) {
