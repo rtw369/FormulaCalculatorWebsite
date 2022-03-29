@@ -2,6 +2,12 @@ let formula1 = "30*sin(x+3) = 30";
 let formula2 = "sin90 = x + 3";
 let formula3 = "sin90 = x + 3";
 
+const container = document.querySelector('#variables');
+const inputBtn = document.querySelector('#input');
+const calculateBtn = document.querySelector('#calculate');
+const input = document.querySelector('input');
+
+let formula;
 let leftSide = "";
 let rightSide = "";
 let variables = new Array(0);
@@ -9,16 +15,30 @@ let values = new Array(0);
 let variable = "x";
 let isDegree = true;
 
-//execute(formula1);
+initialize(formula1);
 
-function execute(formula) {
+inputBtn.addEventListener('click', () => {
+    formula = input.value;
+    console.log(formula);
+
+    if(!(formula.includes("="))) alert
+    initialize(formula);
+});
+
+calculateBtn.addEventListener('click', () => {
+    alert("Calculate");
+});
+
+function initialize(formula) {
     divideFormula(removeSpaces(formula));
     leftSide = createArray(leftSide);
     rightSide = createArray(rightSide);
 
     setVariables(leftSide);
     setVariables(rightSide);
+}
 
+function execute() {
     leftSide = cleanUp(leftSide);
     rightSide = cleanUp(rightSide);
 
