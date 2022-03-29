@@ -17,9 +17,22 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 8px;
 }
 
 .footer {
     font-size: 48px;
     background-color: black;
+}
+
+#variables {
+    width: 512px;
+    height: 512px;
+    border: 4px solid black;
+}
+
+input {
+    font-size: 24px;
+    width: 256px;
+    height: 48px;
 }
