@@ -3,26 +3,47 @@ let formula2 = "sin90 = x + 3";
 let formula3 = "sin90 = x + 3";
 
 const container = document.querySelector('#variables');
-const inputBtn = document.querySelector('#input');
+const inputBtn = document.querySelector('#inputBtn');
 const calculateBtn = document.querySelector('#calculate');
 const input = document.querySelector('input');
+const degRad = document.querySelector('#degRad');
 
 let formula;
-let leftSide = "";
-let rightSide = "";
-let variables = new Array(0);
-let values = new Array(0);
-let variable = "x";
+let leftSide;
+let rightSide;
+let variables;
+let values;
+let variable;
 let isDegree = true;
 
-initialize(formula1);
+//initialize(formula1);
+degRad.addEventListener('click', () => {
+    isDegree = !isDegree;
+
+    if(isDegree) {
+        degRad.textContent = "deg";
+    }
+    else {
+        degRad.textContent = "rad";
+    }
+});
 
 inputBtn.addEventListener('click', () => {
+    leftSide = ""
+    rightSide = "";
+    variables = new Array(0);
+    values = new Array(0);
+    variable = "";
+
     formula = input.value;
     console.log(formula);
 
-    if(!(formula.includes("="))) alert
-    initialize(formula);
+    if(!(formula.includes("="))) {
+        alert("ERROR! Formula does not contain equal sign");
+    }
+    else {
+        initialize(formula);
+    }
 });
 
 calculateBtn.addEventListener('click', () => {
@@ -36,6 +57,16 @@ function initialize(formula) {
 
     setVariables(leftSide);
     setVariables(rightSide);
+
+    console.log(variables);
+
+    if(variables.length == 0) {
+        alert("ERROR! Cannot find a variable");
+    }
+
+    variables.forEach(value => {
+        container.
+    });
 }
 
 function execute() {
