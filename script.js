@@ -42,7 +42,7 @@ inputBtn.addEventListener('click', () => {
     formula = input.value;
 
     if (!(formula.includes("="))) {
-        alert("ERROR! Formula does not contain equal sign");
+        alert("ERROR! Formula does not contain equal sign.");
     }
     else {
         initialize(formula);
@@ -51,10 +51,32 @@ inputBtn.addEventListener('click', () => {
 
 calculateBtn.addEventListener('click', () => {
     values = new Array(0);
+    variable = "";
     for(let i = 0; i < variables.length; i++) {
         values.push(container.children[i].children[0].value);
     }
+    for(let i = 0; i < values.length; i++) {
+        values[i] = removeSpaces(values[i]);
+        if(values[i] == "") {
+            variable = variables[i];
+            i = values.length;
+        }
+    }
     console.log(values);
+    console.log(variable);
+
+    if(variable == "") {
+        alert("ERROR! All variables are known.");
+    }
+    else {
+        /*
+        for(let i = 0; i < variables.length ; i++) {
+            console.log(variables[i]);
+            let test = getValue(variables[i]);
+            console.log(test);
+        }
+        */
+    }
 });
 
 function initialize(formula) {
@@ -66,7 +88,7 @@ function initialize(formula) {
     setVariables(rightSide);
 
     if (variables.length == 0) {
-        alert("ERROR! Cannot find a variable");
+        alert("ERROR! Cannot find a variable.");
     }
     else {
         variables.forEach(value => {
@@ -206,6 +228,7 @@ function getValue(string) {
         for (let i = 0; i < variables.length; i++) {
             if (string == variables[i]) {
                 result = values[i];
+                i = variables.length;
             }
             else result = NaN;
         }
