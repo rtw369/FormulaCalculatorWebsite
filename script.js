@@ -20,7 +20,7 @@ let isDegree = true;
 degRad.addEventListener('click', () => {
     isDegree = !isDegree;
 
-    if(isDegree) {
+    if (isDegree) {
         degRad.textContent = "deg";
     }
     else {
@@ -35,10 +35,13 @@ inputBtn.addEventListener('click', () => {
     values = new Array(0);
     variable = "";
 
-    formula = input.value;
-    console.log(formula);
+    while (container.hasChildNodes()) {
+        container.removeChild(container.firstChild);
+    }
 
-    if(!(formula.includes("="))) {
+    formula = input.value;
+
+    if (!(formula.includes("="))) {
         alert("ERROR! Formula does not contain equal sign");
     }
     else {
@@ -47,7 +50,11 @@ inputBtn.addEventListener('click', () => {
 });
 
 calculateBtn.addEventListener('click', () => {
-    alert("Calculate");
+    values = new Array(0);
+    for(let i = 0; i < variables.length; i++) {
+        values.push(container.children[i].children[0].value);
+    }
+    console.log(values);
 });
 
 function initialize(formula) {
@@ -58,15 +65,21 @@ function initialize(formula) {
     setVariables(leftSide);
     setVariables(rightSide);
 
-    console.log(variables);
-
-    if(variables.length == 0) {
+    if (variables.length == 0) {
         alert("ERROR! Cannot find a variable");
     }
+    else {
+        variables.forEach(value => {
+            const valueDiv = document.createElement('div');
+            valueDiv.classList.add('values');
+            valueDiv.textContent = value;
+            container.appendChild(valueDiv);
 
-    variables.forEach(value => {
-        container.
-    });
+            const valueInput = document.createElement('input');
+            valueInput.classList.add('valueInput');
+            valueDiv.appendChild(valueInput);
+        });
+    }
 }
 
 function execute() {
@@ -1125,7 +1138,7 @@ function getBackExpression(start, array) {
                 bracket--;
                 if (bracket == 0) end = i;
             }
-            if(i == array.length) end = i;
+            if (i == array.length) end = i;
         }
         else {
             if (array[i] == "(") brackets++;
