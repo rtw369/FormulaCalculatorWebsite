@@ -1,7 +1,3 @@
-let formula1 = "30*sin(x+3) = 30";
-let formula2 = "sin90 = x + 3";
-let formula3 = "sin90 = x + 3";
-
 const container = document.querySelector('#variables');
 const inputBtn = document.querySelector('#inputBtn');
 const calculateBtn = document.querySelector('#calculate');
@@ -16,7 +12,6 @@ let values;
 let variable;
 let isDegree = true;
 
-//initialize(formula1);
 degRad.addEventListener('click', () => {
     isDegree = !isDegree;
 
@@ -52,30 +47,53 @@ inputBtn.addEventListener('click', () => {
 calculateBtn.addEventListener('click', () => {
     values = new Array(0);
     variable = "";
-    for(let i = 0; i < variables.length; i++) {
+    for (let i = 0; i < variables.length; i++) {
         values.push(container.children[i].children[0].value);
     }
-    for(let i = 0; i < values.length; i++) {
+    for (let i = 0; i < values.length; i++) {
         values[i] = removeSpaces(values[i]);
-        if(values[i] == "") {
+        if (values[i] == "") {
             variable = variables[i];
             i = values.length;
         }
     }
-    console.log(values);
-    console.log(variable);
 
-    if(variable == "") {
+    if (variable == "") {
         alert("ERROR! All variables are known.");
     }
     else {
-        /*
-        for(let i = 0; i < variables.length ; i++) {
-            console.log(variables[i]);
-            let test = getValue(variables[i]);
-            console.log(test);
+        console.log("before");
+        console.log(leftSide);
+        console.log(rightSide);
+        let repeat = true;
+        while (repeat) {
+            repeat = false;
+            let leftExpression = "";
+            let rightExpression = "";
+
+            for (let i = 0; i < leftSide.length; i++) {
+                if (isVariable(leftSide[i])) {
+                    leftExpression += getValue(leftSide[i]);
+                }
+                else {
+                    leftExpression += leftSide[i];
+                }
+            }
+            for (let i = 0; i < rightSide.length; i++) {
+                if (isVariable(rightSide[i])) {
+                    rightExpression += getValue(rightSide[i]);
+                }
+                else {
+                    rightExpression += rightSide[i];
+                }
+            }
+
+            leftSide = createArray(leftExpression);
+            rightSide = createArray(rightExpression);
+            console.log("after");
+            console.log(leftSide);
+            console.log(rightSide);
         }
-        */
     }
 });
 
@@ -225,12 +243,15 @@ function getValue(string) {
     let result;
 
     if (isVariable(string)) {
-        for (let i = 0; i < variables.length; i++) {
-            if (string == variables[i]) {
-                result = values[i];
-                i = variables.length;
+        if (string == variable) result = variable;
+        else {
+            for (let i = 0; i < variables.length; i++) {
+                if (string == variables[i]) {
+                    result = values[i];
+                    i = variables.length;
+                }
+                else result = NaN;
             }
-            else result = NaN;
         }
     }
     else if (isOperator(string)) {
