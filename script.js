@@ -62,9 +62,6 @@ calculateBtn.addEventListener('click', () => {
         alert("ERROR! All variables are known.");
     }
     else {
-        console.log("before");
-        console.log(leftSide);
-        console.log(rightSide);
         let repeat = true;
         while (repeat) {
             repeat = false;
@@ -90,11 +87,20 @@ calculateBtn.addEventListener('click', () => {
 
             leftSide = createArray(leftExpression);
             rightSide = createArray(rightExpression);
-            console.log("after");
-            console.log(leftSide);
-            console.log(rightSide);
+
+            for(let i = 0; i < leftSide.length; i++) {
+                if(leftSide[i] == variable) i++;
+                else if(isVariable(leftSide[i])) repeat = true;
+            }
+            for(let i = 0; i < rightSide.length; i++) {
+                if(rightSide[i] == variable) i++;
+                else if(isVariable(rightSide[i])) repeat = true;
+            }
         }
     }
+
+    let result = execute();
+    alert(result);
 });
 
 function initialize(formula) {
