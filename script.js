@@ -80,7 +80,7 @@ calculateBtn.addEventListener('click', () => {
             let rightExpression = "";
 
             for (let i = 0; i < leftSide.length; i++) {
-                if (isVariable(leftSide[i])) {
+                if (isVariable(leftSide[i]) && leftSide[i] != variable) {
                     leftExpression += "(";
                     leftExpression += getValue(leftSide[i]);
                     leftExpression += ")";
@@ -90,7 +90,7 @@ calculateBtn.addEventListener('click', () => {
                 }
             }
             for (let i = 0; i < rightSide.length; i++) {
-                if (isVariable(rightSide[i])) {
+                if (isVariable(rightSide[i]) && rightSide[i] != variable) {
                     rightExpression += "(";
                     rightExpression += getValue(rightSide[i]);
                     rightExpression += ")";
@@ -153,9 +153,6 @@ function execute() {
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
 
-    console.log(leftSide);
-    console.log(rightSide);
-
     while (getDenominatorIndex(leftSide) != -1 || getDenominatorIndex(rightSide) != -1) {
         removeDenominator();
     }
@@ -217,6 +214,9 @@ function evaluate(array) {
                 value = getValue(array[i - 1]) * -1;
                 array.splice(i - 1, 1, value);
                 array.splice(i + 1, 1);
+            }
+            if(array[i - 1] == "-") {
+                array[i - 1] = -1;
             }
             value = getValue(array[i - 1]) * getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
@@ -936,13 +936,6 @@ function solveQuadratic() {
     b = evaluate(b);
     c = evaluate(c);
 
-    console.log("a");
-    console.log(a);
-    console.log("b");
-    console.log(b);
-    console.log("c");
-    console.log(c);
-
     if (a == 0 || a == NaN) {
         return moveTerm();
     }
@@ -1223,7 +1216,7 @@ function getBackExpression(start, array) {
         else {
             if (array[i] == "(") brackets++;
             if (isOperator(array[i])) {
-                if (brackets == 0) {
+                if (i != start && brackets == 0) {
                     end = i;
                     i = array.length + 1;
                 }
@@ -1384,4 +1377,4 @@ function copyArray(array) {
     return result;
 }
 
-module.exports.execute = execute;
+//module.exports.test = test;
