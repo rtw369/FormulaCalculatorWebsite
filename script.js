@@ -7,6 +7,8 @@ const degRad = document.querySelector('#degRad');
 let formula;
 let leftSide;
 let rightSide;
+let originalLeft;
+let originalRight;
 let variables;
 let values;
 let variable;
@@ -41,12 +43,17 @@ inputBtn.addEventListener('click', () => {
     }
     else {
         initialize(formula);
+        originalLeft = copyArray(leftSide);
+        originalRight = copyArray(rightSide);
     }
 });
 
 calculateBtn.addEventListener('click', () => {
     values = new Array(0);
     variable = "";
+    leftSide = copyArray(originalLeft);
+    rightSide = copyArray(originalRight);
+
     for (let i = 0; i < variables.length; i++) {
         values.push(container.children[i].children[0].value);
     }
@@ -98,6 +105,9 @@ calculateBtn.addEventListener('click', () => {
             }
         }
     }
+
+    console.log(leftSide);
+    console.log(rightSide);
 
     let result = execute();
     alert(result);
