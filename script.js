@@ -14,6 +14,10 @@ let values;
 let variable;
 let isDegree = true;
 
+let errorMsg1 = "ERROR! Formula does not contain equal sign.";
+let errorMsg2 = "ERROR! All variables are known.";
+let errorMsg3 = "ERROR! Cannot divide by 0."
+
 degRad.addEventListener('click', () => {
     isDegree = !isDegree;
 
@@ -39,7 +43,7 @@ inputBtn.addEventListener('click', () => {
     formula = input.value;
 
     if (!(formula.includes("="))) {
-        alert("ERROR! Formula does not contain equal sign.");
+        alert(errorMsg1);
     }
     else {
         initialize(formula);
@@ -66,7 +70,7 @@ calculateBtn.addEventListener('click', () => {
     }
 
     if (variable == "") {
-        alert("ERROR! All variables are known.");
+        alert(errorMsg2);
     }
     else {
         let repeat = true;
@@ -77,7 +81,9 @@ calculateBtn.addEventListener('click', () => {
 
             for (let i = 0; i < leftSide.length; i++) {
                 if (isVariable(leftSide[i])) {
+                    leftExpression += "(";
                     leftExpression += getValue(leftSide[i]);
+                    leftExpression += ")";
                 }
                 else {
                     leftExpression += leftSide[i];
@@ -85,7 +91,9 @@ calculateBtn.addEventListener('click', () => {
             }
             for (let i = 0; i < rightSide.length; i++) {
                 if (isVariable(rightSide[i])) {
+                    rightExpression += "(";
                     rightExpression += getValue(rightSide[i]);
+                    rightExpression += ")";
                 }
                 else {
                     rightExpression += rightSide[i];
@@ -104,13 +112,10 @@ calculateBtn.addEventListener('click', () => {
                 else if(isVariable(rightSide[i])) repeat = true;
             }
         }
+
+        let result = execute();
+        alert(result);
     }
-
-    console.log(leftSide);
-    console.log(rightSide);
-
-    let result = execute();
-    alert(result);
 });
 
 function initialize(formula) {
@@ -147,6 +152,9 @@ function execute() {
 
     leftSide = expand(leftSide);
     rightSide = expand(rightSide);
+
+    console.log(leftSide);
+    console.log(rightSide);
 
     while (getDenominatorIndex(leftSide) != -1 || getDenominatorIndex(rightSide) != -1) {
         removeDenominator();
@@ -199,6 +207,7 @@ function evaluate(array) {
 
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") {
+            if(getValue(array[i+1]) == 0) alert(errorMsg3);
             value = getValue(array[i - 1]) / getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
             i = 0;
@@ -863,6 +872,10 @@ function solveQuadratic() {
     let count = 0;
     let tempTerm = new Array(0);
 
+    a.push(0);
+    b.push(0);
+    c.push(0);
+
     for (let i = 0; i < leftSide.length; i += term.length) {
         term = getTerm(i, leftSide);
         tempTerm = new Array(0);
@@ -922,6 +935,13 @@ function solveQuadratic() {
     a = evaluate(a);
     b = evaluate(b);
     c = evaluate(c);
+
+    console.log("a");
+    console.log(a);
+    console.log("b");
+    console.log(b);
+    console.log("c");
+    console.log(c);
 
     if (a == 0 || a == NaN) {
         return moveTerm();
