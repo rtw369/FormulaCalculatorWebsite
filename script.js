@@ -1123,6 +1123,11 @@ function setVariables(array) {
             else if (array[i] == "cos") isVariable = false;
             else if (array[i] == "tan") isVariable = false;
         }
+        else if (array[i].length == 4) {
+            if (array[i] == "asin") isVariable = false;
+            else if (array[i] == "acos") isVariable = false;
+            else if (array[i] == "atan") isVariable = false;
+        }
 
         if (isVariable) {
             variables.push(array[i]);
