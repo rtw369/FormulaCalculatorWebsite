@@ -985,8 +985,6 @@ function removeDenominator() {
         }
     }
 
-    //if (remove.length != 0) {
-
     let modifiedTerm = new Array(0);
     let modifiedRemove = new Array(0);
 
@@ -1033,7 +1031,6 @@ function removeDenominator() {
 
     leftSide = copyArray(leftFinal);
     rightSide = copyArray(rightFinal);
-    //}
 }
 
 function removeSpaces(formula) {
@@ -1392,5 +1389,3 @@ function copyArray(array) {
 
     return result;
 }
-
-//module.exports.test = test;
