@@ -103,13 +103,13 @@ calculateBtn.addEventListener('click', () => {
             leftSide = createArray(leftExpression);
             rightSide = createArray(rightExpression);
 
-            for(let i = 0; i < leftSide.length; i++) {
-                if(leftSide[i] == variable) i++;
-                else if(isVariable(leftSide[i])) repeat = true;
+            for (let i = 0; i < leftSide.length; i++) {
+                if (leftSide[i] == variable) i++;
+                else if (isVariable(leftSide[i])) repeat = true;
             }
-            for(let i = 0; i < rightSide.length; i++) {
-                if(rightSide[i] == variable) i++;
-                else if(isVariable(rightSide[i])) repeat = true;
+            for (let i = 0; i < rightSide.length; i++) {
+                if (rightSide[i] == variable) i++;
+                else if (isVariable(rightSide[i])) repeat = true;
             }
         }
 
@@ -204,7 +204,7 @@ function evaluate(array) {
 
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") {
-            if(getValue(array[i+1]) == 0) alert(errorMsg3);
+            if (getValue(array[i + 1]) == 0) alert(errorMsg3);
             value = getValue(array[i - 1]) / getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
             i = 0;
@@ -215,7 +215,7 @@ function evaluate(array) {
                 array.splice(i - 1, 1, value);
                 array.splice(i + 1, 1);
             }
-            if(array[i - 1] == "-") {
+            if (array[i - 1] == "-") {
                 array[i - 1] = -1;
             }
             value = getValue(array[i - 1]) * getValue(array[i + 1]);
@@ -553,6 +553,7 @@ function expand(array) {
 
     //find secondBracket
     for (let i = 0; i < array.length; i++) {
+        if (array[i] == "/") ignore = true;
         if (isFunction(array[i])) {
             ignore = true;
         }
@@ -563,7 +564,6 @@ function expand(array) {
                 brackets--;
                 if (brackets == 0) ignore = false;
             }
-
         }
         else {
             if (array[i] == "(") {
@@ -607,7 +607,6 @@ function expand(array) {
     let firstTerm = new Array(0);
     let secondTerm = new Array(0);
     let length = 0;
-
 
     tempExpression = new Array(0);
     length = 0;
@@ -663,10 +662,6 @@ function expand(array) {
                 secondExpression = getBackExpression(firstExpression.length + 1, expression);
                 length = firstExpression.length + 1 + secondExpression.length;
 
-                if (firstExpression.length > 0 && firstExpression[0] != "(") {
-                    firstExpression.unshift("(");
-                    firstExpression.push(")");
-                }
                 if (secondExpression[0] == "(") {
                     secondExpression = secondExpression.slice(1, secondExpression.length - 1);
                 }
@@ -719,13 +714,6 @@ function expand(array) {
                 expression = firstExpression.concat(secondExpression);
                 break;
 
-            case undefined:
-                if (firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
-                }
-                expression = copyArray(firstExpression);
-                break;
-
             default:
         }
     }
@@ -733,22 +721,45 @@ function expand(array) {
     expression = tempExpression.concat(expression);
 
     let finalArray = new Array(0);
-    let frontCheck = false;
-    let backCheck = false;
 
-    if (frontArray.length != 1 || frontArray[0] != "(") frontCheck = true;
-    if (backArray.length != 1 || backArray[0] != ")") backCheck = true;
+    let getRidOfBrackets = true;
+    brackets = 1;
+    if (expression[0] == "(" && expression[expression.length - 1] == ")") {
+        for (let i = 1; i < expression.length - 1; i++) {
+            if (expression[i] == "(") brackets++;
+            if (expression[i] == ")") brackets--;
+            if (brackets == 0) getRidOfBrackets = false;
+        }
 
-    if (frontCheck && backCheck) finalArray = finalArray.concat(frontArray);
+        if (getRidOfBrackets) {
+            expression = expression.slice(1, expression.length - 1)
+        }
+    }
+
+    finalArray = finalArray.concat(frontArray);
     finalArray = finalArray.concat(expression);
-    if (frontCheck && backCheck) finalArray = finalArray.concat(backArray);
+    finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
+
+    getRidOfBrackets = true;
+    brackets = 1;
+    if (finalArray[0] == "(" && finalArray[finalArray.length - 1] == ")") {
+        for (let i = 1; i < finalArray.length - 1; i++) {
+            if (finalArray[i] == "(") brackets++;
+            if (finalArray[i] == ")") brackets--;
+            if (brackets == 0) getRidOfBrackets = false;
+        }
+
+        if (getRidOfBrackets) {
+            finalArray = finalArray.slice(1, finalArray.length - 1)
+        }
+    }
 
     ignore = false;
     brackets = 0;
 
-    for (i = 0; i < finalArray.length; i++) {
+    for (let i = 0; i < finalArray.length; i++) {
         if (finalArray[i] == "/") {
             ignore = true;
         }
