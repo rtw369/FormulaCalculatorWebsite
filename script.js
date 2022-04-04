@@ -17,6 +17,7 @@ let isDegree = true;
 let errorMsg1 = "ERROR! Formula does not contain equal sign.";
 let errorMsg2 = "ERROR! All variables are known.";
 let errorMsg3 = "ERROR! Cannot divide by 0."
+let errorMsg4 = "ERROR! More than one unknown variables";
 
 degRad.addEventListener('click', () => {
     isDegree = !isDegree;
@@ -64,8 +65,13 @@ calculateBtn.addEventListener('click', () => {
     for (let i = 0; i < values.length; i++) {
         values[i] = removeSpaces(values[i]);
         if (values[i] == "") {
-            variable = variables[i];
-            i = values.length;
+            if (variable == "") {
+                variable = variables[i];
+            }
+            else {
+                alert(errorMsg4);
+                i = variables.length;
+            }
         }
     }
 
@@ -204,7 +210,9 @@ function evaluate(array) {
 
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") {
-            if (getValue(array[i + 1]) == 0) alert(errorMsg3);
+            if (getValue(array[i + 1]) == 0) {
+                alert(errorMsg3);
+            }
             value = getValue(array[i - 1]) / getValue(array[i + 1]);
             array.splice(i - 1, 3, value);
             i = 0;
