@@ -637,6 +637,17 @@ function expand(array) {
 
         tempExpression.push(")");
     }
+    else if(expression[firstExpression.length] == "/") {
+        secondExpression = getBackExpression(firstExpression.length + 1, expression);
+        length = firstExpression.length + 1 + secondExpression;
+        tempExpression.push("(");
+        tempExpression = tempExpression.concat(firstExpression);
+        tempExpression.push(")");
+        tempExpression.push("/");
+        tempExpression.push("(");
+        tempExpression = tempExpression.concat(secondExpression);
+        tempExpression.push(")");
+    }
     else if (!(isFunction(firstExpression[0]))) {
         switch (expression[firstExpression.length]) {
             case "+":
