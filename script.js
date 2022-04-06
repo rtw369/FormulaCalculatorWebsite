@@ -970,8 +970,8 @@ function solveQuadratic() {
         return moveTerm();
     }
     else {
-        let firstResult = (- b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / 2 * a;
-        let secondResult = (- b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / 2 * a;
+        let firstResult = (- b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+        let secondResult = (- b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
 
         let result = firstResult + "\nor\n" + secondResult;
         return result;
