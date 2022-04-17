@@ -62,6 +62,7 @@ calculateBtn.addEventListener('click', () => {
     for (let i = 0; i < variables.length; i++) {
         values.push(container.children[i].children[0].value);
     }
+    
     for (let i = 0; i < values.length; i++) {
         values[i] = removeSpaces(values[i]);
         if (values[i] == "") {
