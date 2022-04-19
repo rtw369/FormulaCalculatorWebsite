@@ -77,11 +77,10 @@ function expandBrackets(array) {
 
     tempExpression = new Array(0);
     length = 0;
-    firstExpression = getBackExpression(0, expression);
+    firstExpression = getBackExpression(0, expression); 
 
     if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
-
         length = firstExpression.length + 1 + secondExpression.length;
         tempExpression.push("(");
 
@@ -98,6 +97,7 @@ function expandBrackets(array) {
     }
     else if (expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
+        backArray = array.slice(firstExpression.length+1+secondExpression.length);
         length = firstExpression.length + 1 + secondExpression;
         tempExpression.push("(");
         tempExpression = tempExpression.concat(firstExpression);
@@ -111,7 +111,7 @@ function expandBrackets(array) {
         switch (expression[firstExpression.length]) {
             case "+":
                 secondExpression = expression.splice(firstExpression.length + 1);
-                secondExpression = expand(secondExpression);
+                secondExpression = expandBrackets(secondExpression);
                 length = firstExpression.length + 1 + secondExpression.length;
 
                 if (firstExpression[0] == "(") {
@@ -257,7 +257,7 @@ function expandBrackets(array) {
         else {
             if (finalArray[i] == "(") {
                 i = 0;
-                finalArray = expand(finalArray);
+                finalArray = expandBrackets(finalArray);
             }
         }
     }
