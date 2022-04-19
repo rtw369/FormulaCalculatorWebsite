@@ -1,5 +1,5 @@
-import {getValue, isFunction, isOperator} from './mylib.js';
-import {isDegree} from './DOM.js';
+import { getValue, isFunction, isOperator } from './mylib.js';
+import { isDegree } from './DOM.js';
 
 let errorMsg = "ERROR! Cannot divide by 0."
 
@@ -160,4 +160,4 @@ function evaluateFunctions(operator, value) {
     return result;
 }
 
-export {evaluate};
+export { evaluate };

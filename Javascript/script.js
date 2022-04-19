@@ -62,7 +62,7 @@ calculateBtn.addEventListener('click', () => {
     for (let i = 0; i < variables.length; i++) {
         values.push(container.children[i].children[0].value);
     }
-    
+
     for (let i = 0; i < values.length; i++) {
         values[i] = removeSpaces(values[i]);
         if (values[i] == "") {
@@ -638,7 +638,7 @@ function expand(array) {
 
         tempExpression.push(")");
     }
-    else if(expression[firstExpression.length] == "/") {
+    else if (expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
         length = firstExpression.length + 1 + secondExpression;
         tempExpression.push("(");

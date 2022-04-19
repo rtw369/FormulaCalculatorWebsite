@@ -1,4 +1,4 @@
-import {createArray} from './FormulaArray.js';
+import { createArray } from './FormulaArray.js';
 
 let variables = new Array(0);
 let variable = "x";
@@ -247,6 +247,7 @@ function setUnknownVariable() {
             else {
                 alert(errorMsg);
                 i = variables.length;
+                values = new Array(0);
             }
         }
     }
@@ -303,7 +304,7 @@ function replaceVariables(array) {
 export {
     reset, resetVariables, cleanUp, copyArray, compareArray, removeSpaces,
     getTerm, getFrontExpression, getBackExpression, getValue,
-    isOperator, isFunction, replaceVariables, 
+    isOperator, isFunction, replaceVariables,
     setVariables, setValues, setUnknownVariable,
     variables, variable, values
 };

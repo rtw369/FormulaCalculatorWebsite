@@ -1,5 +1,5 @@
-import {cleanUp, copyArray, getTerm, getFrontExpression, getBackExpression, isFunction} from './mylib.js';
-import {evaluate} from './Calculate.js';
+import { cleanUp, copyArray, getTerm, getFrontExpression, getBackExpression, isFunction } from './mylib.js';
+import { evaluate } from './Calculate.js';
 
 function expand(array) {
     array = cleanUp(array);
@@ -12,7 +12,7 @@ function expandBrackets(array) {
     let bracket = 0;
     let numOfBrackets = 0;
     let lastBracketIndex = -1;
-    let secondBracket = -1; // start index of second most inner bracket
+    let secondBracket = -1;
 
     let frontArray = new Array(0);
     let backArray = new Array(0);
@@ -20,7 +20,6 @@ function expandBrackets(array) {
     let ignore = false;
     let brackets = 0;
 
-    //find secondBracket
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") ignore = true;
         if (isFunction(array[i])) {
@@ -47,7 +46,6 @@ function expandBrackets(array) {
         }
     }
 
-    //get the every expressions within the brackets
     bracket = 1;
     let end = -1;
     for (let i = secondBracket + 1; i <= array.length; i++) {
@@ -98,7 +96,7 @@ function expandBrackets(array) {
 
         tempExpression.push(")");
     }
-    else if(expression[firstExpression.length] == "/") {
+    else if (expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
         length = firstExpression.length + 1 + secondExpression;
         tempExpression.push("(");
@@ -319,4 +317,4 @@ function expandPower(array) {
     return finalArray;
 }
 
-export {expand, expandBrackets};
+export { expand, expandBrackets };

@@ -1,11 +1,11 @@
-import {copyArray, getTerm, cleanUp, isFunction, isOperator, variable} from './mylib.js';
-import {expandBrackets as expand} from './Expand.js';
-import {evaluate} from './Calculate.js';
+import { copyArray, getTerm, cleanUp, isFunction, isOperator, variable } from './mylib.js';
+import { expandBrackets as expand } from './Expand.js';
+import { evaluate } from './Calculate.js';
 
 let leftFinal = new Array(0);
 let rightFinal = new Array(0);
 
-function rearrange (leftSide, rightSide) {
+function rearrange(leftSide, rightSide) {
     leftFinal = copyArray(leftSide);
     rightFinal = copyArray(rightSide);
 
@@ -311,4 +311,4 @@ function moveTerm() {
     return evaluate(rightExpression);
 }
 
-export {rearrange};
+export { rearrange };

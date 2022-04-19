@@ -1,4 +1,4 @@
-import {removeSpaces} from './mylib.js';
+import { removeSpaces } from './mylib.js';
 
 let leftExpression = new Array(0);
 let rightExpression = new Array(0);
@@ -78,4 +78,4 @@ function createArray(expression) {
     return finalArray;
 }
 
-export {initializeFormula, createArray, leftExpression, rightExpression};
+export { initializeFormula, createArray, leftExpression, rightExpression };

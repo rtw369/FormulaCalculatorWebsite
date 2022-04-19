@@ -1,4 +1,4 @@
-import {copyArray, compareArray, getFrontExpression, getTerm, isFunction, isOperator} from './mylib.js';
+import { copyArray, compareArray, getFrontExpression, getTerm, isFunction, isOperator } from './mylib.js';
 
 let leftExpression = new Array(0);
 let rightExpression = new Array(0);
@@ -177,4 +177,4 @@ function getDenominatorIndex(array) {
     return start;
 }
 
-export {denominator, leftExpression, rightExpression};
+export { denominator, leftExpression, rightExpression };
