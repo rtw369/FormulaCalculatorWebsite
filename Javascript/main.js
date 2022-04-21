@@ -3,11 +3,12 @@ import { expand } from './Expand.js';
 import { reset, resetVariables, copyArray, setVariables, setValues, setUnknownVariable, replaceVariables, variables, variable } from './mylib.js';
 import { denominator, leftExpression as left2, rightExpression as right2 } from './Denominator.js';
 import { rearrange } from './Rearrange.js';
-import { getInput, createInputElements, getInputElementsValues, resetContainer, degOrRad } from './DOM.js';
+import { getInput, createInputElements, getInputElementsValues, resetContainer, resetInput, containerError, inputError, degOrRad } from './DOM.js';
 
 const inputBtn = document.querySelector('#inputBtn');
 const calculateBtn = document.querySelector('#calculate');
 const degRad = document.querySelector('#degRad');
+const output = document.querySelector('.output');
 
 let leftSide;
 let rightSide;
@@ -25,6 +26,7 @@ inputBtn.addEventListener('click', () => {
 
     if (!(formula.includes("="))) {
         alert(errorMsg1);
+        inputError();
     }
     else {
         initializeFormula(formula);
@@ -33,13 +35,13 @@ inputBtn.addEventListener('click', () => {
 
         setVariables(leftSide);
         setVariables(rightSide);
-    }
 
-    if (variables.length == 0) {
-        alert(errorMsg3);
-    }
-    else {
-        createInputElements();
+        if (variables.length == 0) {
+            alert(errorMsg3);
+        }
+        else {
+            createInputElements();
+        }
     }
 });
 
@@ -52,6 +54,7 @@ calculateBtn.addEventListener('click', () => {
 
     if (variable == "") {
         alert(errorMsg2);
+        containerError();
     }
     else {
         leftSide = replaceVariables(leftSide);
@@ -65,7 +68,7 @@ calculateBtn.addEventListener('click', () => {
         rightSide = copyArray(right2);
 
         let result = rearrange(leftSide, rightSide);
-        alert(result);
+        output.textContent = result;
     }
 });
 
@@ -75,6 +78,7 @@ function initialReset() {
     resetVariables();
     reset();
     resetContainer();
+    resetInput();
 }
 
 function valueReset() {

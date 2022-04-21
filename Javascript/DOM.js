@@ -34,9 +34,15 @@ function getInputElementsValues() {
 }
 
 function resetContainer() {
+    container.style.border = "2px solid black";
+
     while (container.hasChildNodes()) {
         container.removeChild(container.firstChild);
     }
+}
+
+function resetInput() {
+    input.style.border = "2px solid black";
 }
 
 function degOrRad() {
@@ -50,4 +56,12 @@ function degOrRad() {
     }
 }
 
-export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, isDegree };
+function containerError() {
+    container.style.border = "2px solid red";
+}
+
+function inputError() {
+    input.style.border = "2px solid red";
+}
+
+export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, resetInput, containerError, inputError, isDegree };
