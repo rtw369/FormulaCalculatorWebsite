@@ -1,4 +1,4 @@
-import { containerError, setDisplay } from './DOM.js';
+import { variableError } from './DOM.js';
 import { createArray } from './FormulaArray.js';
 
 let variables = new Array(0);
@@ -246,8 +246,7 @@ function setUnknownVariable() {
                 variable = variables[i];
             }
             else {
-                setDisplay(errorMsg);
-                containerError();
+                variableError(errorMsg);
                 i = variables.length;
                 values = new Array(0);
             }

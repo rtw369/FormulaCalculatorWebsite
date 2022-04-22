@@ -6,6 +6,15 @@ body {
     justify-content: space-between;
 }
 
+#formulaInput {
+    display: flex;
+    flex-direction: column;
+}
+
+span {
+    color: red;
+}
+
 button {
     width: 72px;
     height: 54px;
@@ -44,6 +53,7 @@ button:hover {
 }
 
 .output {
+    width: 664px;
     height: 256px;
     font-size: 48px;
     display: flex;

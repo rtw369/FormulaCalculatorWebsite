@@ -4,6 +4,8 @@ const container = document.querySelector('#variables');
 const input = document.querySelector('input');
 const degRad = document.querySelector('#degRad');
 const output = document.querySelector('.output');
+const error1 = document.querySelector('#formulaError');
+const error2 = document.querySelector('#variableError');
 
 let isDegree = true;
 
@@ -35,15 +37,9 @@ function getInputElementsValues() {
 }
 
 function resetContainer() {
-    container.style.border = "2px solid black";
-
     while (container.hasChildNodes()) {
         container.removeChild(container.firstChild);
     }
-}
-
-function resetInput() {
-    input.style.border = "2px solid black";
 }
 
 function resetDisplay() {
@@ -65,17 +61,17 @@ function setDisplay(string) {
     output.textContent = string;
 }
 
-function containerError() {
-    container.style.border = "2px solid red";
+function formulaError(msg) {
+    error1.textContent = msg;
 }
 
-function inputError() {
-    input.style.border = "2px solid red";
+function variableError(msg) {
+    error2.textContent = msg;
 }
 
-function hasDisplay() {
-    if(output.textContent == "") return false;
-    else return true;
+function resetErrors() {
+    error1.textContent = "";
+    error2.textContent = "";
 }
 
-export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, resetInput, resetDisplay, setDisplay, containerError, inputError, hasDisplay, isDegree };
+export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, resetDisplay, setDisplay, formulaError, variableError, resetErrors, isDegree };
