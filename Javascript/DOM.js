@@ -3,6 +3,7 @@ import { variables } from './mylib.js';
 const container = document.querySelector('#variables');
 const input = document.querySelector('input');
 const degRad = document.querySelector('#degRad');
+const output = document.querySelector('.output');
 
 let isDegree = true;
 
@@ -45,6 +46,10 @@ function resetInput() {
     input.style.border = "2px solid black";
 }
 
+function resetDisplay() {
+    output.textContent = "";
+}
+
 function degOrRad() {
     isDegree = !isDegree;
 
@@ -56,6 +61,10 @@ function degOrRad() {
     }
 }
 
+function setDisplay(string) {
+    output.textContent = string;
+}
+
 function containerError() {
     container.style.border = "2px solid red";
 }
@@ -64,4 +73,9 @@ function inputError() {
     input.style.border = "2px solid red";
 }
 
-export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, resetInput, containerError, inputError, isDegree };
+function hasDisplay() {
+    if(output.textContent == "") return false;
+    else return true;
+}
+
+export { getInput, createInputElements, getInputElementsValues, degOrRad, resetContainer, resetInput, resetDisplay, setDisplay, containerError, inputError, hasDisplay, isDegree };

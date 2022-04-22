@@ -3,7 +3,7 @@ import { expand } from './Expand.js';
 import { reset, resetVariables, copyArray, setVariables, setValues, setUnknownVariable, replaceVariables, variables, variable } from './mylib.js';
 import { denominator, leftExpression as left2, rightExpression as right2 } from './Denominator.js';
 import { rearrange } from './Rearrange.js';
-import { getInput, createInputElements, getInputElementsValues, resetContainer, resetInput, containerError, inputError, degOrRad } from './DOM.js';
+import { getInput, createInputElements, getInputElementsValues, resetContainer, resetInput, resetDisplay, setDisplay, containerError, inputError, hasDisplay, degOrRad } from './DOM.js';
 
 const inputBtn = document.querySelector('#inputBtn');
 const calculateBtn = document.querySelector('#calculate');
@@ -25,7 +25,7 @@ inputBtn.addEventListener('click', () => {
     let formula = getInput();
 
     if (!(formula.includes("="))) {
-        alert(errorMsg1);
+        setDisplay(errorMsg1);
         inputError();
     }
     else {
@@ -37,7 +37,7 @@ inputBtn.addEventListener('click', () => {
         setVariables(rightSide);
 
         if (variables.length == 0) {
-            alert(errorMsg3);
+            setDisplay(errorMsg3);
         }
         else {
             createInputElements();
@@ -53,7 +53,7 @@ calculateBtn.addEventListener('click', () => {
     setUnknownVariable();
 
     if (variable == "") {
-        alert(errorMsg2);
+        setDisplay(errorMsg2);
         containerError();
     }
     else {
@@ -68,7 +68,9 @@ calculateBtn.addEventListener('click', () => {
         rightSide = copyArray(right2);
 
         let result = rearrange(leftSide, rightSide);
-        output.textContent = result;
+        if(!hasDisplay()) {
+            setDisplay(result);
+        }
     }
 });
 
@@ -85,4 +87,6 @@ function valueReset() {
     leftSide = left1;
     rightSide = right1;
     reset();
+    resetInput();
+    resetDisplay();
 }

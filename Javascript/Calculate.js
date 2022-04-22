@@ -1,5 +1,5 @@
 import { getValue, isFunction, isOperator } from './mylib.js';
-import { isDegree } from './DOM.js';
+import { isDegree, setDisplay } from './DOM.js';
 
 let errorMsg = "ERROR! Cannot divide by 0."
 
@@ -43,7 +43,7 @@ function evaluate(array) {
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") {
             if (getValue(array[i + 1]) == 0) {
-                alert(errorMsg);
+                setDisplay(errorMsg);
             }
             value = getValue(array[i - 1]) / getValue(array[i + 1]);
             array.splice(i - 1, 3, value);

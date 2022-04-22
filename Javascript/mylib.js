@@ -1,11 +1,11 @@
-import { containerError } from './DOM.js';
+import { containerError, setDisplay } from './DOM.js';
 import { createArray } from './FormulaArray.js';
 
 let variables = new Array(0);
 let variable = "x";
 let values = new Array(0);
 
-let errorMsg = "ERROR! More than one unknown variables";
+let errorMsg = "ERROR! More than one unknown variables.";
 
 function reset() {
     values = new Array(0);
@@ -246,7 +246,7 @@ function setUnknownVariable() {
                 variable = variables[i];
             }
             else {
-                alert(errorMsg);
+                setDisplay(errorMsg);
                 containerError();
                 i = variables.length;
                 values = new Array(0);
