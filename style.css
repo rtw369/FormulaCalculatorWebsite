@@ -53,12 +53,13 @@ button:hover {
 }
 
 .output {
-    width: 664px;
+    width: 564px;
     height: 256px;
     font-size: 48px;
     display: flex;
     text-align: center;
     align-items: center;
+    justify-content: center;
 }
 
 .content {

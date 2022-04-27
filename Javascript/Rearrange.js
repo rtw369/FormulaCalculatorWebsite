@@ -166,7 +166,7 @@ function solveQuadratic() {
         let firstResult = (- b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
         let secondResult = (- b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
 
-        let result = firstResult + "\nor\n" + secondResult;
+        let result = firstResult + "<br/>or<br/>" + secondResult;
         return result;
     }
 }

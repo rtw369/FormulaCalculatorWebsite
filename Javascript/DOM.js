@@ -58,7 +58,7 @@ function degOrRad() {
 }
 
 function setDisplay(string) {
-    output.textContent = string;
+    output.innerHTML = string;
 }
 
 function formulaError(msg) {
