@@ -4,6 +4,7 @@ body {
     flex-direction: column;
     margin: 0;
     justify-content: space-between;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 #formulaInput {
@@ -12,27 +13,27 @@ body {
 }
 
 span {
-    color: red;
+    color: #b00020;
 }
 
 button {
     width: 72px;
     height: 54px;
-    border: 2px solid blue;
+    border: 2px solid #6200ee;
     border-radius: 12px;
     transition-duration: 0.4s;
 }
 
 button:hover {
-    background-color: blue;
-    color: white;
+    background-color: #6200EE;
+    color: #FFFFFF;
 }
 
 .header {
     text-align: center;
     font-size: 48px;
     background-color: #1f2937;
-    color: azure;
+    color: #FFFFFF;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,6 +42,8 @@ button:hover {
 
 #degRad {
     border-radius: 12px;
+    background-color: #1f2937;
+    color: #FFFFFF;
 }
 
 .container {
@@ -53,7 +56,7 @@ button:hover {
 }
 
 .output {
-    width: 564px;
+    width: 664px;
     height: 256px;
     font-size: 48px;
     display: flex;
@@ -108,8 +111,8 @@ input {
 }
 
 .footer {
-    font-size: 24px;
+    height: 24px;
     background-color: #1f2937;
-    color: azure;
+    color: #FFFFFF;
     padding: 16px;
 }
