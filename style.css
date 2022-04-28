@@ -7,9 +7,10 @@ body {
     font-family: 'Courier New', Courier, monospace;
 }
 
-#formulaInput {
+.formulaInput {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 16px;
 }
 
 span {
@@ -17,15 +18,18 @@ span {
 }
 
 button {
-    width: 72px;
+    width: 84px;
     height: 54px;
-    border: 2px solid #6200ee;
+    border: 2px solid #018786;
+    background-color: #FFFFFF;
     border-radius: 12px;
     transition-duration: 0.4s;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #6200EE;
+    background-color: #018786;
     color: #FFFFFF;
 }
 
@@ -46,6 +50,10 @@ button:hover {
     color: #FFFFFF;
 }
 
+#degRad:hover {
+    background-color: #018786;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -53,6 +61,7 @@ button:hover {
     align-items: center;
     gap: 8px;
     padding: 32px;
+    /*background-color: #6200ee;*/
 }
 
 .output {
@@ -67,9 +76,10 @@ button:hover {
 
 .content {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    gap: 36px;
+    gap: 8px;
 }
 
 #formulaInput {
@@ -79,7 +89,12 @@ button:hover {
 #variables {
     width: 1536px;
     height: 256px;
-    border: 4px solid black;
+    /*
+    border: 4px solid #018786;
+    background-color: #03dac6;
+    */
+    border: 4px solid #000;
+    background-color: #FFFFFF;
     padding-top: 8px;
     display: flex;
     flex-direction: row;
@@ -91,14 +106,14 @@ input {
     font-size: 24px;
     width: 256px;
     height: 48px;
-    border: 2px solid black;
+    border: 2px solid #000;
 }
 
 .values {
     width: 474px;
     height: 54px;
     font-size: 36px;
-    background-color: grey;
+    background-color: #018786;
     display: flex;
     justify-content: space-between;
     align-items: center;

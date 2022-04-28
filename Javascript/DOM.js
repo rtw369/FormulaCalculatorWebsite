@@ -50,10 +50,10 @@ function degOrRad() {
     isDegree = !isDegree;
 
     if (isDegree) {
-        degRad.textContent = "deg";
+        degRad.textContent = "DEG";
     }
     else {
-        degRad.textContent = "rad";
+        degRad.textContent = "RAD";
     }
 }
 
