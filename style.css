@@ -113,7 +113,10 @@ input {
     width: 474px;
     height: 54px;
     font-size: 36px;
-    background-color: #018786;
+    font-weight: bold;
+    /*background-color: #018786;*/
+    background-color: #1f2937;
+    color: #FFFFFF;
     display: flex;
     justify-content: space-between;
     align-items: center;
