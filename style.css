@@ -58,7 +58,6 @@ button:hover {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
     gap: 8px;
     padding: 32px;
     /*background-color: #6200ee;*/
@@ -113,7 +112,6 @@ input {
     width: 450px;
     height: 54px;
     font-size: 36px;
-    font-weight: bold;
     /*background-color: #018786;*/
     background-color: #1f2937;
     color: #FFFFFF;
