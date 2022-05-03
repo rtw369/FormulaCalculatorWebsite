@@ -62,11 +62,11 @@ function setDisplay(string) {
 }
 
 function formulaError(msg) {
-    error1.textContent = msg;
+    error1.innerHTML = msg;
 }
 
 function variableError(msg) {
-    error2.textContent = msg;
+    error2.innerHTML = msg;
 }
 
 function resetErrors() {
