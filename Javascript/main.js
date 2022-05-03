@@ -12,8 +12,8 @@ const degRad = document.querySelector('#degRad');
 let leftSide;
 let rightSide;
 
-let errorMsg1 = "ERROR! Formula does not contain equal sign.";
-let errorMsg2 = "ERROR! All variables are known.";
+let errorMsg1 = "ERROR! Must contain equal sign.";
+let errorMsg2 = "ERROR! All variables are known.<br/>Please leave one variable empty.";
 let errorMsg3 = "ERROR! Cannot find a variable.";
 
 degRad.addEventListener('click', () => degOrRad());

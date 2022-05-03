@@ -5,7 +5,7 @@ let variables = new Array(0);
 let variable = "x";
 let values = new Array(0);
 
-let errorMsg = "ERROR! More than one unknown variables.";
+let errorMsg = "ERROR! More than one unknown variables.<br/>Please leave one variable empty.";
 
 function reset() {
     values = new Array(0);
