@@ -1,4 +1,4 @@
-import { cleanUp, copyArray, getTerm, getFrontExpression, getBackExpression, isFunction } from './mylib.js';
+import { cleanUp, copyArray, compareArray, getTerm, getFrontExpression, getBackExpression, isFunction } from './mylib.js';
 import { evaluate } from './Calculate.js';
 
 function expand(array) {
@@ -75,10 +75,38 @@ function expandBrackets(array) {
     let secondTerm = new Array(0);
     let length = 0;
 
+    let getRidOfBrackets = true;
+
     tempExpression = new Array(0);
     length = 0;
-    firstExpression = getBackExpression(0, expression); 
+    firstExpression = getBackExpression(0, expression);
+/*
+    console.log(array);
+    console.log(expression);
+    console.log(firstExpression);
+    console.log(expression[firstExpression.length]);
 
+    if(compareArray(firstExpression, expression)) {
+        getRidOfBrackets = true;
+        brackets = 1
+        if (expression[0] == "(" && expression[expression.length - 1] == ")") {
+            for (let i = 1; i < expression.length - 1; i++) {
+                if (expression[i] == "(") brackets++;
+                if (expression[i] == ")") brackets--;
+                if (brackets == 0) getRidOfBrackets = false;
+            }
+    
+            if (getRidOfBrackets) {
+                expression = expandBrackets(expression.slice(1, expression.length - 1));
+            }
+            firstExpression = getBackExpression(0, expression);
+        }
+        console.log("check");
+        console.log(firstExpression);
+        console.log(expression);
+    }
+
+*/
     if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
         length = firstExpression.length + 1 + secondExpression.length;
@@ -96,8 +124,24 @@ function expandBrackets(array) {
         tempExpression.push(")");
     }
     else if (expression[firstExpression.length] == "/") {
+        console.log("try");
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
-        backArray = array.slice(firstExpression.length+1+secondExpression.length);
+        backArray = array.slice(firstExpression.length + 1 + secondExpression.length);
+        
+        getRidOfBrackets = true;
+        brackets = 1;
+        if (secondExpression[0] == "(" && secondExpression[secondExpression.length - 1] == ")") {
+            for (let i = 1; i < secondExpression.length - 1; i++) {
+                if (secondExpression[i] == "(") brackets++;
+                if (secondExpression[i] == ")") brackets--;
+                if (brackets == 0) getRidOfBrackets = false;
+            }
+
+            if (getRidOfBrackets) {
+                secondExpression = secondExpression.slice(1, secondExpression.length - 1);
+            }
+        }
+        
         length = firstExpression.length + 1 + secondExpression;
         tempExpression.push("(");
         tempExpression = tempExpression.concat(firstExpression);
@@ -200,7 +244,7 @@ function expandBrackets(array) {
 
     let finalArray = new Array(0);
 
-    let getRidOfBrackets = true;
+    getRidOfBrackets = true;
     brackets = 1;
     if (expression[0] == "(" && expression[expression.length - 1] == ")") {
         for (let i = 1; i < expression.length - 1; i++) {
@@ -210,7 +254,7 @@ function expandBrackets(array) {
         }
 
         if (getRidOfBrackets) {
-            expression = expression.slice(1, expression.length - 1)
+            expression = expression.slice(1, expression.length - 1);
         }
     }
 
@@ -230,7 +274,7 @@ function expandBrackets(array) {
         }
 
         if (getRidOfBrackets) {
-            finalArray = finalArray.slice(1, finalArray.length - 1)
+            finalArray = finalArray.slice(1, finalArray.length - 1);
         }
     }
 
