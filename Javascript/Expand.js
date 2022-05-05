@@ -86,7 +86,7 @@ function expandBrackets(array) {
     console.log(firstExpression);
     console.log(expression[firstExpression.length]);
 
-    if(compareArray(firstExpression, expression)) {
+    if(compareArray(firstExpression, expression) && firstExpression.includes("/")) {
         getRidOfBrackets = true;
         brackets = 1
         if (expression[0] == "(" && expression[expression.length - 1] == ")") {
@@ -98,14 +98,10 @@ function expandBrackets(array) {
     
             if (getRidOfBrackets) {
                 expression = expandBrackets(expression.slice(1, expression.length - 1));
+                firstExpression = getBackExpression(0, expression);
             }
-            firstExpression = getBackExpression(0, expression);
         }
-        console.log("check");
-        console.log(firstExpression);
-        console.log(expression);
     }
-
 */
     if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
@@ -124,7 +120,6 @@ function expandBrackets(array) {
         tempExpression.push(")");
     }
     else if (expression[firstExpression.length] == "/") {
-        console.log("try");
         secondExpression = getBackExpression(firstExpression.length + 1, expression);
         backArray = array.slice(firstExpression.length + 1 + secondExpression.length);
         
