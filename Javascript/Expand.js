@@ -1,10 +1,16 @@
-import { cleanUp, copyArray, compareArray, getTerm, getFrontExpression, getBackExpression, isFunction } from './mylib.js';
+import { cleanUp, copyArray, getTerm, getFrontExpression, getBackExpression, isFunction } from './mylib.js';
 import { evaluate } from './Calculate.js';
 
 function expand(array) {
     array = cleanUp(array);
     array = expandPower(array);
     array = expandBrackets(array);
+
+    /*
+    console.log("return");
+    console.log(array);
+    */
+   
     return array;
 }
 
@@ -19,8 +25,6 @@ function expandBrackets(array) {
 
     let ignore = false;
     let brackets = 0;
-
-    console.log("check");
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") ignore = true;
         if (isFunction(array[i])) {
@@ -33,6 +37,7 @@ function expandBrackets(array) {
                 brackets--;
                 if (brackets == 0) ignore = false;
             }
+            //if (brackets == 0) ignore = false;
         }
         else {
             if (array[i] == "(") {
@@ -66,13 +71,17 @@ function expandBrackets(array) {
         expression.push(array[i]);
     }
 
-    console.log("what is this?");
-    console.log(secondBracket);
-    console.log(end);
-    console.log(array);
-
     frontArray = array.slice(0, secondBracket + 1);
     backArray = array.slice(secondBracket + expression.length + 1);
+
+    /*
+    console.log("check");
+    console.log(secondBracket);
+    console.log(end);
+    console.log(frontArray);
+    console.log(expression);
+    console.log(backArray);
+    */
 
     let firstExpression = new Array(0);
     let secondExpression = new Array(0);
@@ -85,10 +94,12 @@ function expandBrackets(array) {
 
     firstExpression = getBackExpression(0, expression);
 
+    /*
     console.log("before");
     console.log(array);
     console.log(expression);
     console.log(firstExpression);
+    */
 
     if (firstExpression[0] == "(" && firstExpression.includes("/")) {
         getRidOfBrackets = true;
@@ -112,7 +123,6 @@ function expandBrackets(array) {
             }
         }
     }
-    console.log(getRidOfBrackets);
 
     if (!getRidOfBrackets) {
         tempExpression = new Array(0);
@@ -273,11 +283,13 @@ function expandBrackets(array) {
 
     finalArray = cleanUp(finalArray);
 
+    /*
     console.log("after");
     console.log(frontArray);
     console.log(expression);
     console.log(backArray);
     console.log(finalArray);
+    */
 
     getRidOfBrackets = true;
     brackets = 1;
@@ -308,10 +320,9 @@ function expandBrackets(array) {
             if (finalArray[i] == "(") brackets++;
             if (finalArray[i] == ")") {
                 brackets--;
-                if (brackets == 0) {
-                    ignore = false;
-                }
+                if (brackets == 0) ignore = false;
             }
+            //if (brackets == 0) ignore = false;
         }
         else {
             if (finalArray[i] == "(") {
