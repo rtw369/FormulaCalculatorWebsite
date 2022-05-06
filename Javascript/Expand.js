@@ -20,6 +20,7 @@ function expandBrackets(array) {
     let ignore = false;
     let brackets = 0;
 
+    console.log("check");
     for (let i = 0; i < array.length; i++) {
         if (array[i] == "/") ignore = true;
         if (isFunction(array[i])) {
@@ -65,6 +66,11 @@ function expandBrackets(array) {
         expression.push(array[i]);
     }
 
+    console.log("what is this?");
+    console.log(secondBracket);
+    console.log(end);
+    console.log(array);
+
     frontArray = array.slice(0, secondBracket + 1);
     backArray = array.slice(secondBracket + expression.length + 1);
 
@@ -75,163 +81,171 @@ function expandBrackets(array) {
     let secondTerm = new Array(0);
     let length = 0;
 
-    let getRidOfBrackets = true;
+    let getRidOfBrackets = false;
 
-    tempExpression = new Array(0);
-    length = 0;
     firstExpression = getBackExpression(0, expression);
-/*
+
+    console.log("before");
     console.log(array);
     console.log(expression);
     console.log(firstExpression);
-    console.log(expression[firstExpression.length]);
 
-    if(compareArray(firstExpression, expression) && firstExpression.includes("/")) {
-        getRidOfBrackets = true;
-        brackets = 1
-        if (expression[0] == "(" && expression[expression.length - 1] == ")") {
-            for (let i = 1; i < expression.length - 1; i++) {
-                if (expression[i] == "(") brackets++;
-                if (expression[i] == ")") brackets--;
-                if (brackets == 0) getRidOfBrackets = false;
-            }
-    
-            if (getRidOfBrackets) {
-                expression = expandBrackets(expression.slice(1, expression.length - 1));
-                firstExpression = getBackExpression(0, expression);
-            }
-        }
-    }
-*/
-    if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
-        secondExpression = getBackExpression(firstExpression.length + 1, expression);
-        length = firstExpression.length + 1 + secondExpression.length;
-        tempExpression.push("(");
-
-        firstExpression = firstExpression.slice(1, firstExpression.length - 1);
-
-        for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
-            firstTerm = getTerm(i, firstExpression);
-            tempExpression = tempExpression.concat(firstTerm);
-            tempExpression.push("/");
-            tempExpression = tempExpression.concat(secondExpression);
-        }
-
-        tempExpression.push(")");
-    }
-    else if (expression[firstExpression.length] == "/") {
-        secondExpression = getBackExpression(firstExpression.length + 1, expression);
-        backArray = array.slice(firstExpression.length + 1 + secondExpression.length);
-        
+    if (firstExpression[0] == "(" && firstExpression.includes("/")) {
         getRidOfBrackets = true;
         brackets = 1;
-        if (secondExpression[0] == "(" && secondExpression[secondExpression.length - 1] == ")") {
-            for (let i = 1; i < secondExpression.length - 1; i++) {
-                if (secondExpression[i] == "(") brackets++;
-                if (secondExpression[i] == ")") brackets--;
+        if (firstExpression[0] == "(" && firstExpression[firstExpression.length - 1] == ")") {
+            for (let i = 1; i < firstExpression.length - 1; i++) {
+                if (firstExpression[i] == "(") brackets++;
+                if (firstExpression[i] == ")") brackets--;
                 if (brackets == 0) getRidOfBrackets = false;
             }
 
             if (getRidOfBrackets) {
-                secondExpression = secondExpression.slice(1, secondExpression.length - 1);
+                length = firstExpression.length;
+                tempExpression = firstExpression.slice(1, firstExpression.length - 1);
+                firstExpression = getBackExpression(0, tempExpression);
+                secondExpression = getBackExpression(firstExpression.length + 1, tempExpression);
+                if(secondExpression[0] == "(") {
+                    getRidOfBrackets = false;
+                    firstExpression = getBackExpression(0, expression);
+                }
             }
         }
-        
-        length = firstExpression.length + 1 + secondExpression;
-        tempExpression.push("(");
-        tempExpression = tempExpression.concat(firstExpression);
-        tempExpression.push(")");
-        tempExpression.push("/");
-        tempExpression.push("(");
-        tempExpression = tempExpression.concat(secondExpression);
-        tempExpression.push(")");
     }
-    else if (!(isFunction(firstExpression[0]))) {
-        switch (expression[firstExpression.length]) {
-            case "+":
-                secondExpression = expression.splice(firstExpression.length + 1);
-                secondExpression = expandBrackets(secondExpression);
-                length = firstExpression.length + 1 + secondExpression.length;
+    console.log(getRidOfBrackets);
 
-                if (firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
-                }
-                if (secondExpression[0] == "(") {
-                    secondExpression = secondExpression.slice(1, secondExpression.length - 1);
-                }
+    if (!getRidOfBrackets) {
+        tempExpression = new Array(0);
+        if (firstExpression[0] == "(" && expression[firstExpression.length] == "/") {
+            secondExpression = getBackExpression(firstExpression.length + 1, expression);
+            length = firstExpression.length + 1 + secondExpression.length;
+            tempExpression.push("(");
 
-                tempExpression = tempExpression.concat(firstExpression);
+            firstExpression = firstExpression.slice(1, firstExpression.length - 1);
 
-                if (secondExpression[0] == "+") {
-                    secondExpression.splice(0, 1);
-                    tempExpression.push("+");
-                }
-                else if (secondExpression[0] == "-") {
-                    secondExpression.splice(0, 1);
-                    tempExpression.push("-");
-                }
-                else tempExpression.push("+");
-
+            for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
+                firstTerm = getTerm(i, firstExpression);
+                tempExpression = tempExpression.concat(firstTerm);
+                tempExpression.push("/");
                 tempExpression = tempExpression.concat(secondExpression);
-                break;
+            }
 
-            case "-":
-                secondExpression = getBackExpression(firstExpression.length + 1, expression);
-                length = firstExpression.length + 1 + secondExpression.length;
+            tempExpression.push(")");
+        }
+        else if (expression[firstExpression.length] == "/") {
+            secondExpression = getBackExpression(firstExpression.length + 1, expression);
+            backArray = array.slice(firstExpression.length + 1 + secondExpression.length);
 
-                if (secondExpression[0] == "(") {
+            getRidOfBrackets = true;
+            brackets = 1;
+            if (secondExpression[0] == "(" && secondExpression[secondExpression.length - 1] == ")") {
+                for (let i = 1; i < secondExpression.length - 1; i++) {
+                    if (secondExpression[i] == "(") brackets++;
+                    if (secondExpression[i] == ")") brackets--;
+                    if (brackets == 0) getRidOfBrackets = false;
+                }
+
+                if (getRidOfBrackets) {
                     secondExpression = secondExpression.slice(1, secondExpression.length - 1);
                 }
+            }
 
-                tempExpression = tempExpression.concat(firstExpression);
-                tempExpression.push("+");
-                tempExpression.push("(");
+            length = firstExpression.length + 1 + secondExpression;
+            tempExpression.push("(");
+            tempExpression = tempExpression.concat(firstExpression);
+            tempExpression.push(")");
+            tempExpression.push("/");
+            tempExpression.push("(");
+            tempExpression = tempExpression.concat(secondExpression);
+            tempExpression.push(")");
+        }
+        else if (!(isFunction(firstExpression[0]))) {
+            switch (expression[firstExpression.length]) {
+                case "+":
+                    secondExpression = expression.splice(firstExpression.length + 1);
+                    secondExpression = expandBrackets(secondExpression);
+                    length = firstExpression.length + 1 + secondExpression.length;
 
-                for (let i = 0; i < secondExpression.length; i += secondTerm.length) {
-                    secondTerm = getTerm(i, secondExpression);
-                    if (secondTerm[0] == "+") secondTerm[0] = "-";
-                    else if (secondTerm[0] == "-") secondTerm[0] = "+";
-                    else tempExpression.push("-");
+                    if (firstExpression[0] == "(") {
+                        firstExpression = firstExpression.slice(1, firstExpression.length - 1);
+                    }
+                    if (secondExpression[0] == "(") {
+                        secondExpression = secondExpression.slice(1, secondExpression.length - 1);
+                    }
 
-                    tempExpression = tempExpression.concat(secondTerm);
-                }
-                tempExpression.push(")");
-                break;
+                    tempExpression = tempExpression.concat(firstExpression);
 
-            case "*":
-                tempExpression.push("(");
-                secondExpression = getBackExpression(firstExpression.length + 1, expression);
-                length = firstExpression.length + 1 + secondExpression.length;
-                firstExpression = cleanUp(firstExpression);
-                secondExpression = cleanUp(secondExpression);
+                    if (secondExpression[0] == "+") {
+                        secondExpression.splice(0, 1);
+                        tempExpression.push("+");
+                    }
+                    else if (secondExpression[0] == "-") {
+                        secondExpression.splice(0, 1);
+                        tempExpression.push("-");
+                    }
+                    else tempExpression.push("+");
 
-                if (firstExpression[0] == "(") {
-                    firstExpression = firstExpression.slice(1, firstExpression.length - 1);
-                }
-                if (secondExpression[0] == "(") {
-                    secondExpression = secondExpression.slice(1, secondExpression.length - 1);
-                }
+                    tempExpression = tempExpression.concat(secondExpression);
+                    break;
 
-                for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
-                    firstTerm = getTerm(i, firstExpression);
-                    for (let n = 0; n < secondExpression.length; n += secondTerm.length) {
-                        secondTerm = getTerm(n, secondExpression);
-                        if (tempExpression.length != 1) tempExpression.push("+");
-                        tempExpression = tempExpression.concat(firstTerm);
-                        tempExpression.push("*");
+                case "-":
+                    secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                    length = firstExpression.length + 1 + secondExpression.length;
+
+                    if (secondExpression[0] == "(") {
+                        secondExpression = secondExpression.slice(1, secondExpression.length - 1);
+                    }
+
+                    tempExpression = tempExpression.concat(firstExpression);
+                    tempExpression.push("+");
+                    tempExpression.push("(");
+
+                    for (let i = 0; i < secondExpression.length; i += secondTerm.length) {
+                        secondTerm = getTerm(i, secondExpression);
+                        if (secondTerm[0] == "+") secondTerm[0] = "-";
+                        else if (secondTerm[0] == "-") secondTerm[0] = "+";
+                        else tempExpression.push("-");
+
                         tempExpression = tempExpression.concat(secondTerm);
                     }
-                }
-                tempExpression.push(")");
-                break;
+                    tempExpression.push(")");
+                    break;
 
-            case "(":
-                secondExpression = expression.slice(firstExpression.length);
-                firstExpression.push("*");
-                expression = firstExpression.concat(secondExpression);
-                break;
+                case "*":
+                    tempExpression.push("(");
+                    secondExpression = getBackExpression(firstExpression.length + 1, expression);
+                    length = firstExpression.length + 1 + secondExpression.length;
+                    firstExpression = cleanUp(firstExpression);
+                    secondExpression = cleanUp(secondExpression);
 
-            default:
+                    if (firstExpression[0] == "(") {
+                        firstExpression = firstExpression.slice(1, firstExpression.length - 1);
+                    }
+                    if (secondExpression[0] == "(") {
+                        secondExpression = secondExpression.slice(1, secondExpression.length - 1);
+                    }
+
+                    for (let i = 0; i < firstExpression.length; i += firstTerm.length) {
+                        firstTerm = getTerm(i, firstExpression);
+                        for (let n = 0; n < secondExpression.length; n += secondTerm.length) {
+                            secondTerm = getTerm(n, secondExpression);
+                            if (tempExpression.length != 1) tempExpression.push("+");
+                            tempExpression = tempExpression.concat(firstTerm);
+                            tempExpression.push("*");
+                            tempExpression = tempExpression.concat(secondTerm);
+                        }
+                    }
+                    tempExpression.push(")");
+                    break;
+
+                case "(":
+                    secondExpression = expression.slice(firstExpression.length);
+                    firstExpression.push("*");
+                    expression = firstExpression.concat(secondExpression);
+                    break;
+
+                default:
+            }
         }
     }
     expression.splice(0, length);
@@ -258,6 +272,12 @@ function expandBrackets(array) {
     finalArray = finalArray.concat(backArray);
 
     finalArray = cleanUp(finalArray);
+
+    console.log("after");
+    console.log(frontArray);
+    console.log(expression);
+    console.log(backArray);
+    console.log(finalArray);
 
     getRidOfBrackets = true;
     brackets = 1;
